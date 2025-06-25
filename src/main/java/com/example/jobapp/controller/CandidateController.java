@@ -58,8 +58,8 @@ public class CandidateController {
 
 
     @PostMapping("apply")
-    String applyJobPost() {
-        return candidateService.applyJobPost();
+    String applyJobPost(@RequestBody Map<String, Integer> map) {
+        return candidateService.applyJobPost(map.getOrDefault("jobPostId", -1));
     }
 
     @GetMapping("jobpost")

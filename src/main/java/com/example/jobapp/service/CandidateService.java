@@ -1,8 +1,8 @@
 package com.example.jobapp.service;
 
+import com.example.jobapp.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.jobapp.entity.Candidate;
@@ -12,11 +12,13 @@ import com.example.jobapp.repository.CandidateRepository;
 public class CandidateService {
 
     private CandidateRepository candidateRepository;
+    private JobRepository jobRepository;
     public static String username;
 
     @Autowired
-    public CandidateService(CandidateRepository candidateRepository) {
+    public CandidateService(CandidateRepository candidateRepository, JobRepository jobRepository) {
         this.candidateRepository = candidateRepository;
+        this.jobRepository = jobRepository;
     }
 
 
@@ -32,12 +34,12 @@ public class CandidateService {
         return null;
     }
 
-    public String applyJobPost() {
+    public String applyJobPost(Integer jobPostId) {
         // TODO Auto-generated method stub
 
-//        if(candidateRepository.findById(username).orElse(null) == null) {
-//            return "fail";
-//        }
+        if(jobRepository.findById(jobPostId).orElse(null) == null) {
+            return "No such Job Post Id " + jobPostId;
+        }
 
         return "success";
     }
