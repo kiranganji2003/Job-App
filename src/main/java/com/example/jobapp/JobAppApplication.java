@@ -8,6 +8,6 @@ public class JobAppApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(JobAppApplication.class, args);
-		System.out.println("Running..");
+		System.out.println("Application Started..");
 	}
 }

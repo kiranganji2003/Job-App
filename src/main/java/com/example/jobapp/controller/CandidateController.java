@@ -56,15 +56,20 @@ public class CandidateController {
         return new ResponseEntity<String>(res, HttpStatus.OK);
     }
 
+    @GetMapping("jobpost")
+    List<JobPost> getAllJobPost() {
+        return candidateService.getAllJobPost();
+    }
+
+    @GetMapping("jobpost/search")
+    List<JobPost> getJobsByQuery(@RequestParam String query) {
+        return candidateService.getJobsByQuery(query);
+    }
 
     @PostMapping("apply")
     String applyJobPost(@RequestBody Map<String, Integer> map) {
         return candidateService.applyJobPost(map.getOrDefault("jobPostId", -1));
     }
 
-    @GetMapping("jobpost")
-    List<JobPost> viewAllJobPost() {
-        return null;
-    }
 }
 

@@ -87,21 +87,6 @@ public class JobService {
         return "Job Posted Successfully";
     }
 
-
-
-    public List<JobPost> getAllJobPost() {
-        // TODO Auto-generated method stub
-        return jobRepository.findAll();
-    }
-
-
-
-    public List<JobPost> getJobsByQuery(String str) {
-        // TODO Auto-generated method stub
-        return jobRepository.searchJob(str);
-    }
-
-
     private boolean companyContainsJobPost(int jobpost) {
         Company company = CompanyRepository.findByUsername(username);
         return company.getJobPostList().contains(jobpost);
