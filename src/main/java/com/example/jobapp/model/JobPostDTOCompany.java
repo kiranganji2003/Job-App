@@ -14,6 +14,6 @@ public class JobPostDTOCompany {
     private Integer reqExperience;
     private double salary;
     private List<String> postTechStack;
-    private Set<Integer> candidateList;
+    private Set<String> candidateList;
 }
 

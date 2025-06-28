@@ -50,11 +50,20 @@ public class CandidateService {
     public String applyJobPost(Integer jobPostId) {
         // TODO Auto-generated method stub
 
-        if(jobRepository.findById(jobPostId).orElse(null) == null) {
+        JobPost jobPost = jobRepository.findById(jobPostId).orElse(null);
+
+        if(jobPost == null) {
             return "No such Job Post Id " + jobPostId;
         }
 
-        return "success";
+        jobPost.getCandidateList().add(username);
+        jobRepository.save(jobPost);
+
+        Candidate candidate = candidateRepository.findByEmail(username);
+        candidate.getJobPostList().add(jobPostId);
+        candidateRepository.save(candidate);
+
+        return "Successfully applied for " + jobPost.getPostProfile() + " role!";
     }
 
 }

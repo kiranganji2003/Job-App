@@ -1,5 +1,6 @@
 package com.example.jobapp.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
@@ -16,7 +17,7 @@ public class Candidate {
     private String name;
     private Integer experience;
     private String company;
-    private Set<Integer> jobPostList;
+    private Set<Integer> jobPostList = new HashSet<>();
 
 }
 

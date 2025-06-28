@@ -23,7 +23,7 @@ public class JobPost {
     private Integer reqExperience;
     private double salary;
     private List<String> postTechStack;
-    private Set<Integer> candidateList = new HashSet<>();
+    private Set<String> candidateList = new HashSet<>();
 
 }
 
