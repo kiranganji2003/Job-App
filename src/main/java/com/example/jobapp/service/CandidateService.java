@@ -1,6 +1,8 @@
 package com.example.jobapp.service;
 
 import com.example.jobapp.entity.JobPost;
+import com.example.jobapp.model.CandidateDTO;
+import com.example.jobapp.model.JobPostDTOCandidate;
 import com.example.jobapp.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.example.jobapp.entity.Candidate;
 import com.example.jobapp.repository.CandidateRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -66,5 +69,36 @@ public class CandidateService {
         return "Successfully applied for " + jobPost.getPostProfile() + " role!";
     }
 
+    public CandidateDTO getCandidateProfile() {
+        CandidateDTO candidateDTO = new CandidateDTO();
+
+        Candidate candidate = candidateRepository.findByEmail(username);
+        candidateDTO.setName(candidate.getName());
+        candidateDTO.setCompany(candidate.getCompany());
+        candidateDTO.setEmail(candidate.getEmail());
+        candidateDTO.setPassword(candidate.getPassword());
+        candidateDTO.setExperience(candidate.getExperience());
+        List<JobPostDTOCandidate> list = new ArrayList<>();
+
+        for(int jobid : candidate.getJobPostList()) {
+            JobPost job = jobRepository.findById(jobid).orElse(new JobPost());
+            JobPostDTOCandidate jobPostDTOCandidate = new JobPostDTOCandidate();
+
+            jobPostDTOCandidate.setPostProfile(job.getPostProfile());
+            jobPostDTOCandidate.setPostId(job.getPostId());
+            jobPostDTOCandidate.setPostDesc(job.getPostDesc());
+            jobPostDTOCandidate.setLocation(job.getLocation());
+            jobPostDTOCandidate.setPostTechStack(job.getPostTechStack());
+            jobPostDTOCandidate.setSalary(job.getSalary());
+            jobPostDTOCandidate.setCompany(job.getCompany());
+            jobPostDTOCandidate.setReqExperience(job.getReqExperience());
+
+            list.add(jobPostDTOCandidate);
+        }
+
+        candidateDTO.setJobPostList(list);
+
+        return candidateDTO;
+    }
 }
 

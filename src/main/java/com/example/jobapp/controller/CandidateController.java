@@ -1,6 +1,7 @@
 package com.example.jobapp.controller;
 
 import com.example.jobapp.entity.JobPost;
+import com.example.jobapp.model.CandidateDTO;
 import com.example.jobapp.repository.CandidateRepository;
 import com.example.jobapp.security.JwtUtilCandidate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +70,11 @@ public class CandidateController {
     @PostMapping("apply")
     String applyJobPost(@RequestBody Map<String, Integer> map) {
         return candidateService.applyJobPost(map.getOrDefault("jobPostId", -1));
+    }
+
+    @GetMapping("profile")
+    CandidateDTO getCandidateProfile() {
+        return candidateService.getCandidateProfile();
     }
 
 }
