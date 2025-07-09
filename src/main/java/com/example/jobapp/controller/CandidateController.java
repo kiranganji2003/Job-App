@@ -2,6 +2,7 @@ package com.example.jobapp.controller;
 
 import com.example.jobapp.entity.JobPost;
 import com.example.jobapp.model.CandidateDTO;
+import com.example.jobapp.model.JobPostDTOCandidate;
 import com.example.jobapp.repository.CandidateRepository;
 import com.example.jobapp.security.JwtUtilCandidate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,5 +78,15 @@ public class CandidateController {
         return candidateService.getCandidateProfile();
     }
 
+    @PostMapping("withdrawn")
+    ResponseEntity<JobPostDTOCandidate> withdrawJobApplication(@RequestBody Map<String, Integer> map) {
+        JobPostDTOCandidate jobPostDTOCandidate = candidateService.withdrawJobApplication(map.getOrDefault("jobPostId", -1));
+
+        if(jobPostDTOCandidate == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(jobPostDTOCandidate, HttpStatus.OK);
+    }
 }
 

@@ -81,24 +81,43 @@ public class CandidateService {
         List<JobPostDTOCandidate> list = new ArrayList<>();
 
         for(int jobid : candidate.getJobPostList()) {
-            JobPost job = jobRepository.findById(jobid).orElse(new JobPost());
-            JobPostDTOCandidate jobPostDTOCandidate = new JobPostDTOCandidate();
-
-            jobPostDTOCandidate.setPostProfile(job.getPostProfile());
-            jobPostDTOCandidate.setPostId(job.getPostId());
-            jobPostDTOCandidate.setPostDesc(job.getPostDesc());
-            jobPostDTOCandidate.setLocation(job.getLocation());
-            jobPostDTOCandidate.setPostTechStack(job.getPostTechStack());
-            jobPostDTOCandidate.setSalary(job.getSalary());
-            jobPostDTOCandidate.setCompany(job.getCompany());
-            jobPostDTOCandidate.setReqExperience(job.getReqExperience());
-
-            list.add(jobPostDTOCandidate);
+            list.add(getJobPostDTOCandidate(jobid));
         }
 
         candidateDTO.setJobPostList(list);
 
         return candidateDTO;
+    }
+
+    private JobPostDTOCandidate getJobPostDTOCandidate(int jobid) {
+        JobPost job = jobRepository.findById(jobid).orElse(new JobPost());
+        JobPostDTOCandidate jobPostDTOCandidate = new JobPostDTOCandidate();
+
+        jobPostDTOCandidate.setPostProfile(job.getPostProfile());
+        jobPostDTOCandidate.setPostId(job.getPostId());
+        jobPostDTOCandidate.setPostDesc(job.getPostDesc());
+        jobPostDTOCandidate.setLocation(job.getLocation());
+        jobPostDTOCandidate.setPostTechStack(job.getPostTechStack());
+        jobPostDTOCandidate.setSalary(job.getSalary());
+        jobPostDTOCandidate.setCompany(job.getCompany());
+        jobPostDTOCandidate.setReqExperience(job.getReqExperience());
+
+        return jobPostDTOCandidate;
+    }
+
+    public JobPostDTOCandidate withdrawJobApplication(Integer jobPostId) {
+
+        System.out.println("--> " + jobPostId);
+        Candidate candidate = candidateRepository.findByEmail(username);
+
+        if(!candidate.getJobPostList().contains(jobPostId)) {
+            return null;
+        }
+
+        candidate.getJobPostList().remove(jobPostId);
+        candidateRepository.save(candidate);
+
+        return getJobPostDTOCandidate(jobPostId);
     }
 }
 
