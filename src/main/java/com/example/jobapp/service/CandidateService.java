@@ -107,7 +107,6 @@ public class CandidateService {
 
     public JobPostDTOCandidate withdrawJobApplication(Integer jobPostId) {
 
-        System.out.println("--> " + jobPostId);
         Candidate candidate = candidateRepository.findByEmail(username);
 
         if(!candidate.getJobPostList().contains(jobPostId)) {
