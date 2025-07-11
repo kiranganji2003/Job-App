@@ -88,5 +88,11 @@ public class CandidateController {
 
         return new ResponseEntity<>(jobPostDTOCandidate, HttpStatus.OK);
     }
+
+    @DeleteMapping("delete")
+    String deleteCandidate() {
+        return candidateService.deleteCandidate();
+    }
+
 }
 

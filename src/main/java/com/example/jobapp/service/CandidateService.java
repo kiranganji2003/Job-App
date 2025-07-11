@@ -118,5 +118,19 @@ public class CandidateService {
 
         return getJobPostDTOCandidate(jobPostId);
     }
+
+    public String deleteCandidate() {
+        Candidate candidate = candidateRepository.findByEmail(username);
+
+        for(int jobPostId : candidate.getJobPostList()) {
+            JobPost jobPost = jobRepository.findById(jobPostId).orElse(new JobPost());
+            jobPost.getCandidateList().remove(username);
+            jobRepository.save(jobPost);
+        }
+
+        candidateRepository.deleteById(username);
+
+        return username + " deleted successfully";
+    }
 }
 
