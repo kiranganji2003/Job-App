@@ -1,13 +1,11 @@
 package com.example.jobapp.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -22,7 +20,9 @@ public class JobPost {
     private String location;
     private Integer reqExperience;
     private double salary;
-    private List<String> postTechStack;
+    @ElementCollection
+    private List<String> postTechStack = new ArrayList<>();
+    @ElementCollection
     private Set<String> candidateList = new HashSet<>();
 
 }

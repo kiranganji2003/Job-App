@@ -1,7 +1,9 @@
 package com.example.jobapp.controller;
 
+import java.util.List;
 import java.util.Map;
 
+import com.example.jobapp.model.JobPostInsight;
 import com.example.jobapp.repository.CompanyRepository;
 import com.example.jobapp.security.JwtUtilCompany;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,5 +85,10 @@ public class JobController {
     @DeleteMapping("jobpost")
     ResponseEntity<String> deleteJobPost(@RequestBody Integer jobPostId) {
         return jobService.deleteJobPost(jobPostId);
+    }
+
+    @GetMapping("jobpost/insight")
+    List<JobPostInsight> getJobpostInsight() {
+        return jobService.getJobpostInsight();
     }
 }
