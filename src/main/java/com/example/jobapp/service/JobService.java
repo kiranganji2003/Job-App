@@ -36,6 +36,10 @@ public class JobService {
 
     public String registerCompany(Company company) {
         // TODO Auto-generated method stub
+        if(companyRepository.findByUsername(company.getUsername()) != null) {
+            return "Username already exists";
+        }
+
         company.setPassword(passwordEncoder.encode(company.getPassword()));
         companyRepository.save(company);
         return "Registered Successfully";
