@@ -83,8 +83,8 @@ public class JobController {
     }
 
     @DeleteMapping("jobpost")
-    ResponseEntity<String> deleteJobPost(@RequestBody Integer jobPostId) {
-        return jobService.deleteJobPost(jobPostId);
+    ResponseEntity<String> deleteJobPost(@RequestBody Map<String, Integer> map) {
+        return jobService.deleteJobPost(map.getOrDefault("jobPostId", -1));
     }
 
     @GetMapping("jobpost/insight")

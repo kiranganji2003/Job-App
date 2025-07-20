@@ -116,6 +116,10 @@ public class CandidateService {
         candidate.getJobPostList().remove(jobPostId);
         candidateRepository.save(candidate);
 
+        JobPost jobPost = jobRepository.findById(jobPostId).orElse(new JobPost());
+        jobPost.getCandidateList().remove(username);
+        jobRepository.save(jobPost);
+
         return getJobPostDTOCandidate(jobPostId);
     }
 

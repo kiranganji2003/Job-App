@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.example.jobapp.entity.Candidate;
 import com.example.jobapp.model.JobPostInsight;
+import com.example.jobapp.repository.CandidateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,16 +25,19 @@ public class JobService {
 
     private CompanyRepository companyRepository;
     private JobRepository jobRepository;
+    private CandidateRepository candidateRepository;
     private PasswordEncoder passwordEncoder;
     public static String username;
 
 
     @Autowired
-    public JobService(CompanyRepository companyRepository, JobRepository jobRepository, PasswordEncoder passwordEncoder) {
+    public JobService(CompanyRepository companyRepository, JobRepository jobRepository, CandidateRepository candidateRepository, PasswordEncoder passwordEncoder) {
         this.companyRepository = companyRepository;
         this.jobRepository = jobRepository;
+        this.candidateRepository = candidateRepository;
         this.passwordEncoder = passwordEncoder;
     }
+
 
     public String registerCompany(Company company) {
         // TODO Auto-generated method stub
@@ -133,7 +138,17 @@ public class JobService {
         company.getJobPostList().remove(Integer.valueOf(postId));
         companyRepository.save(company);
 
+        JobPost jobPost = jobRepository.findById(postId).orElse(new JobPost());
+
+        for(String candidateEmail : jobPost.getCandidateList()) {
+            Candidate candidate = candidateRepository.findByEmail(candidateEmail);
+            candidate.getJobPostList().remove(postId);
+            candidateRepository.save(candidate);
+        }
+
         jobRepository.deleteById(postId);
+
+
 
         return new ResponseEntity<String>("Job Post Deleted Succesfully", HttpStatus.OK);
     }
