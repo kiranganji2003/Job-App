@@ -71,9 +71,9 @@ public class CandidateController {
     }
 
     @GetMapping("jobpost")
-    List<JobPost> getAllJobPost() {
+    List<JobPostDTOCandidate> getAllJobPost() {
         logger.info("getAllJobPost() called");
-        List<JobPost> jobs = candidateService.getAllJobPost();
+        List<JobPostDTOCandidate> jobs = candidateService.getAllJobPost();
         logger.info("getAllJobPost() returned {} job posts", jobs.size());
         return jobs;
     }
@@ -118,6 +118,14 @@ public class CandidateController {
         String response = candidateService.deleteCandidate();
         logger.info("deleteCandidate() response: {}", response);
         return response;
+    }
+
+    @GetMapping("jobpost/salary")
+    List<JobPostDTOCandidate> getJobPostBySalary(@RequestParam(required = false) Long min, @RequestParam(required = false) Long max) {
+        min = (min == null ? 0 : min);
+        max = (max == null ? Long.MAX_VALUE : max);
+
+        return candidateService.getJobPostBySalary(min, max);
     }
 
 }

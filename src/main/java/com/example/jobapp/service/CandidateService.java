@@ -12,6 +12,7 @@ import com.example.jobapp.entity.Candidate;
 import com.example.jobapp.repository.CandidateRepository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -40,9 +41,15 @@ public class CandidateService {
         return null;
     }
 
-    public List<JobPost> getAllJobPost() {
+    public List<JobPostDTOCandidate> getAllJobPost() {
         // TODO Auto-generated method stub
-        return jobRepository.findAll();
+        List<JobPostDTOCandidate> list = new ArrayList<>();
+
+        for(JobPost jobPost : jobRepository.findAll()) {
+            list.add(getJobPostDTOCandidate(jobPost.getPostId()));
+        }
+
+        return list;
     }
 
     public List<JobPost> getJobsByQuery(String str) {
@@ -135,6 +142,21 @@ public class CandidateService {
         candidateRepository.deleteById(username);
 
         return username + " deleted successfully";
+    }
+
+    public List<JobPostDTOCandidate> getJobPostBySalary(long min, long max) {
+        List<JobPost>  allJobPost = jobRepository.findAll();
+        List<JobPostDTOCandidate> filteredList = new ArrayList<>();
+
+        for(JobPost jobPost : allJobPost) {
+            if(jobPost.getSalary() < min || jobPost.getSalary() > max) {
+                continue;
+            }
+            filteredList.add(getJobPostDTOCandidate(jobPost.getPostId()));
+        }
+
+        Collections.sort(filteredList, (o1, o2) -> (int)(o1.getSalary() - o2.getSalary()));
+        return filteredList;
     }
 }
 
