@@ -1,10 +1,10 @@
 package com.example.jobapp.controller;
 
-import com.example.jobapp.entity.JobPost;
 import com.example.jobapp.model.CandidateDTO;
 import com.example.jobapp.model.JobPostDTOCandidate;
 import com.example.jobapp.repository.CandidateRepository;
 import com.example.jobapp.security.JwtUtilCandidate;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,9 +79,9 @@ public class CandidateController {
     }
 
     @GetMapping("jobpost/search")
-    List<JobPost> getJobsByQuery(@RequestParam String query) {
+    List<JobPostDTOCandidate> getJobsByQuery(@RequestParam String query) {
         logger.info("getJobsByQuery() started with query='{}'", query);
-        List<JobPost> jobs = candidateService.getJobsByQuery(query);
+        List<JobPostDTOCandidate> jobs = candidateService.getJobsByQuery(query);
         logger.info("getJobsByQuery() found {} results for query='{}'", jobs.size(), query);
         return jobs;
     }
@@ -128,5 +128,14 @@ public class CandidateController {
         return candidateService.getJobPostBySalary(min, max);
     }
 
+    @GetMapping("jobpost/search/techstack")
+    List<JobPostDTOCandidate> getJobsByTechStack(@RequestBody TechStackList techStackList) {
+        return candidateService.getJobsByTechStack(techStackList.getTechStackList());
+    }
+
 }
 
+@Data
+class TechStackList {
+    List<String> techStackList;
+}

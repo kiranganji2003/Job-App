@@ -11,12 +11,21 @@ import com.example.jobapp.entity.JobPost;
 
 @Repository
 public interface JobRepository extends JpaRepository<JobPost, Integer> {
-    @Query("SELECT job FROM JobPost job WHERE "
-            + "LOWER(job.postProfile) LIKE LOWER(CONCAT('%', :keyword, '%')) OR "
-            + "LOWER(job.company) LIKE LOWER(CONCAT('%', :keyword, '%')) OR "
-            + "LOWER(job.postDesc) LIKE LOWER(CONCAT('%', :keyword, '%')) OR "
-            + "LOWER(job.location) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    @Query("""
+        SELECT job FROM JobPost job WHERE
+        LOWER(job.postProfile) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+        LOWER(job.company) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+        LOWER(job.postDesc) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+        LOWER(job.location) LIKE LOWER(CONCAT('%', :keyword, '%'))
+        """)
     List<JobPost> searchJob(@Param("keyword") String keyword);
 
+
+    @Query("""
+        SELECT j FROM JobPost j
+        JOIN j.postTechStack tech
+        WHERE LOWER(tech) IN :inputTechs
+        """)
+    List<JobPost> findByMatchingTechStack(@Param("inputTechs") List<String> inputTechs);
 
 }

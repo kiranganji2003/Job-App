@@ -11,9 +11,8 @@ import org.springframework.stereotype.Service;
 import com.example.jobapp.entity.Candidate;
 import com.example.jobapp.repository.CandidateRepository;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CandidateService {
@@ -52,9 +51,16 @@ public class CandidateService {
         return list;
     }
 
-    public List<JobPost> getJobsByQuery(String str) {
+    public List<JobPostDTOCandidate> getJobsByQuery(String str) {
         // TODO Auto-generated method stub
-        return jobRepository.searchJob(str);
+        List<JobPost> jobPostList = jobRepository.searchJob(str);
+        List<JobPostDTOCandidate> jobPostDTOCandidateList = new ArrayList<>();
+
+        for(JobPost jobPost : jobPostList) {
+            jobPostDTOCandidateList.add(getJobPostDTOCandidate(jobPost.getPostId()));
+        }
+
+        return  jobPostDTOCandidateList;
     }
 
     public String applyJobPost(Integer jobPostId) {
@@ -157,6 +163,40 @@ public class CandidateService {
 
         Collections.sort(filteredList, (o1, o2) -> (int)(o1.getSalary() - o2.getSalary()));
         return filteredList;
+    }
+
+    public List<JobPostDTOCandidate> getJobsByTechStack(List<String> techstack) {
+
+        techstack = techstack
+                .stream()
+                .map(String::toLowerCase)
+                .toList();
+
+        List<JobPost> jobPostList = jobRepository.findByMatchingTechStack(techstack);
+        List<JobPostDTOCandidate> jobPostDTOCandidateList = new ArrayList<>();
+
+
+        for(JobPost jobPost : jobPostList) {
+            boolean containsAll = true;
+            List<String> postTechStack = jobPost.getPostTechStack()
+                    .stream()
+                    .map(String::toLowerCase)
+                    .toList();
+
+
+            for(String tech : techstack) {
+                if(!postTechStack.contains(tech)) {
+                    containsAll = false;
+                    break;
+                }
+            }
+
+            if (containsAll) {
+                jobPostDTOCandidateList.add(getJobPostDTOCandidate(jobPost.getPostId()));
+            }
+        }
+
+        return jobPostDTOCandidateList;
     }
 }
 
