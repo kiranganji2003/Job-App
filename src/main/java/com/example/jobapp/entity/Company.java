@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Entity
@@ -18,7 +19,7 @@ public class Company {
     private String description;
 
     @ElementCollection
-    private List<Integer> jobPostList = new ArrayList<>();
+    private Map<Integer, LocalDate> jobPostListDate = new HashMap<>();
 
 }
 
