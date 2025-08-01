@@ -21,6 +21,6 @@ public class Candidate {
     private String company;
 
     @ElementCollection
-    Map<Integer, LocalDate> jobPostListDate = new HashMap<>();
+    Map<Integer, LocalDate> jobPostListAndDate = new HashMap<>();
 }
 

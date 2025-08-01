@@ -1,5 +1,6 @@
 package com.example.jobapp.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -62,9 +63,9 @@ public class JobService {
         companyDTO.setName(company.getName());
         companyDTO.setDescription(company.getDescription());
 
-//        for(int jobPostId : company.getJobPostListDate().keySet()) {
-//            companyDTO.getJobPostList().add(convertToJobPostDtoCompany(jobRepository.findById(jobPostId).orElse(null)));
-//        }
+        for(int jobPostId : company.getJobPostListAndDate().keySet()) {
+            companyDTO.getJobPostList().add(convertToJobPostDtoCompany(jobRepository.findById(jobPostId).orElse(null)));
+        }
 
         return companyDTO;
     }
@@ -93,7 +94,7 @@ public class JobService {
         Company company = companyRepository.getReferenceById(username);
         jobPost.setCompany(company.getName());
         JobPost savedJobPost = jobRepository.save(jobPost);
-        //company.getJobPostList().add(savedJobPost.getPostId());
+        company.getJobPostListAndDate().put(savedJobPost.getPostId(), LocalDate.now());
         companyRepository.save(company);
 
         return "Job Posted Successfully";
@@ -101,8 +102,7 @@ public class JobService {
 
     private boolean companyContainsJobPost(int jobpost) {
         Company company = companyRepository.findByUsername(username);
-        return true;
-        //return company.getJobPostList().contains(jobpost);
+        return company.getJobPostListAndDate().keySet().contains(jobpost);
     }
 
 
@@ -110,7 +110,7 @@ public class JobService {
         // TODO Auto-generated method stub
 
         if(!companyContainsJobPost(jobPost.getPostId())) {
-            return new ResponseEntity<String>("Not valid job post id", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<String>("Not valid job post id", HttpStatus.BAD_REQUEST);
         }
 
         JobPost job = jobRepository.getReferenceById(jobPost.getPostId());
@@ -136,20 +136,18 @@ public class JobService {
         }
 
         Company company = companyRepository.findByUsername(username);
-       // company.getJobPostList().remove(Integer.valueOf(postId));
+        company.getJobPostListAndDate().remove(Integer.valueOf(postId));
         companyRepository.save(company);
 
         JobPost jobPost = jobRepository.findById(postId).orElse(new JobPost());
 
         for(String candidateEmail : jobPost.getCandidateList()) {
             Candidate candidate = candidateRepository.findByEmail(candidateEmail);
-         //   candidate.getJobPostList().remove(postId);
+            candidate.getJobPostListAndDate().remove(postId);
             candidateRepository.save(candidate);
         }
 
         jobRepository.deleteById(postId);
-
-
 
         return new ResponseEntity<String>("Job Post Deleted Succesfully", HttpStatus.OK);
     }
@@ -158,14 +156,14 @@ public class JobService {
         List<JobPostInsight> jobPostList = new ArrayList<>();
         Company company = companyRepository.findByUsername(username);
 
-//        for(int postId : company.getJobPostList()) {
-//            JobPost jobPost = jobRepository.findById(postId).orElse(new JobPost());
-//            JobPostInsight jobPostInsight = new JobPostInsight();
-//            jobPostInsight.setPostId(postId);
-//            jobPostInsight.setCandidatesApplied(jobPost.getCandidateList().size());
-//            jobPostInsight.setCandidateList(jobPost.getCandidateList());
-//            jobPostList.add(jobPostInsight);
-//        }
+        for(int postId : company.getJobPostListAndDate().keySet()) {
+            JobPost jobPost = jobRepository.findById(postId).orElse(new JobPost());
+            JobPostInsight jobPostInsight = new JobPostInsight();
+            jobPostInsight.setPostId(postId);
+            jobPostInsight.setCandidatesApplied(jobPost.getCandidateList().size());
+            jobPostInsight.setCandidateList(jobPost.getCandidateList());
+            jobPostList.add(jobPostInsight);
+        }
 
         Collections.sort(jobPostList);
 

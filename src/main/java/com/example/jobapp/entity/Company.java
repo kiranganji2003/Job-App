@@ -19,7 +19,7 @@ public class Company {
     private String description;
 
     @ElementCollection
-    private Map<Integer, LocalDate> jobPostListDate = new HashMap<>();
+    private Map<Integer, LocalDate> jobPostListAndDate = new HashMap<>();
 
 }
 
