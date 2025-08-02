@@ -2,6 +2,7 @@ package com.example.jobapp.controller;
 
 import com.example.jobapp.model.CandidateDTO;
 import com.example.jobapp.model.JobPostDTOCandidate;
+import com.example.jobapp.model.LoginInfo;
 import com.example.jobapp.repository.CandidateRepository;
 import com.example.jobapp.security.JwtUtilCandidate;
 import lombok.Data;
@@ -38,10 +39,10 @@ public class CandidateController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> request) {
-        logger.info("login() started for username={}", request.get("username"));
-        String username = request.get("username");
-        String password = request.get("password");
+    public ResponseEntity<String> login(@RequestBody LoginInfo loginInfo) {
+        logger.info("login() started for username={}", loginInfo.getUsername());
+        String username = loginInfo.getUsername();
+        String password = loginInfo.getPassword();
 
         Candidate userOpt = candidateRepository.findByEmail(username);
         if (userOpt != null && passwordEncoder.matches(password, userOpt.getPassword())) {

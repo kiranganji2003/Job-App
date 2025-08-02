@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.example.jobapp.model.JobPostInsight;
+import com.example.jobapp.model.LoginInfo;
 import com.example.jobapp.repository.CompanyRepository;
 import com.example.jobapp.security.JwtUtilCompany;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +44,9 @@ public class JobController {
     }
 
     @PostMapping("login")
-    ResponseEntity<String> loginCompany(@RequestBody Map<String, String> request) {
-        String username = request.get("username");
-        String password = request.get("password");
+    ResponseEntity<String> loginCompany(@RequestBody LoginInfo loginInfo) {
+        String username = loginInfo.getUsername();
+        String password = loginInfo.getPassword();
 
         Company userOpt = companyRepository.findByUsername(username);
 
