@@ -1,5 +1,6 @@
 package com.example.jobapp.entity;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -20,6 +21,7 @@ public class JobPost {
     private String location;
     private Integer reqExperience;
     private double salary;
+
     @ElementCollection
     private List<String> postTechStack = new ArrayList<>();
     @ElementCollection

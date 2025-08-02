@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import com.example.jobapp.entity.Candidate;
 import com.example.jobapp.repository.CandidateRepository;
 
+import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class CandidateService {
@@ -37,7 +37,7 @@ public class CandidateService {
             return "Registered Successfully";
         }
 
-        return null;
+        return "Email already registered";
     }
 
     public List<JobPostDTOCandidate> getAllJobPost() {
@@ -76,7 +76,7 @@ public class CandidateService {
         jobRepository.save(jobPost);
 
         Candidate candidate = candidateRepository.findByEmail(username);
-        candidate.getJobPostList().add(jobPostId);
+        candidate.getJobPostListAndDate().put(jobPostId, LocalDate.now());
         candidateRepository.save(candidate);
 
         return "Successfully applied for " + jobPost.getPostProfile() + " role!";
@@ -93,7 +93,7 @@ public class CandidateService {
         candidateDTO.setExperience(candidate.getExperience());
         List<JobPostDTOCandidate> list = new ArrayList<>();
 
-        for(int jobid : candidate.getJobPostList()) {
+        for(int jobid : candidate.getJobPostListAndDate().keySet()) {
             list.add(getJobPostDTOCandidate(jobid));
         }
 
@@ -122,11 +122,11 @@ public class CandidateService {
 
         Candidate candidate = candidateRepository.findByEmail(username);
 
-        if(!candidate.getJobPostList().contains(jobPostId)) {
+        if(!candidate.getJobPostListAndDate().keySet().contains(jobPostId)) {
             return null;
         }
 
-        candidate.getJobPostList().remove(jobPostId);
+        candidate.getJobPostListAndDate().remove(jobPostId);
         candidateRepository.save(candidate);
 
         JobPost jobPost = jobRepository.findById(jobPostId).orElse(new JobPost());
@@ -139,7 +139,7 @@ public class CandidateService {
     public String deleteCandidate() {
         Candidate candidate = candidateRepository.findByEmail(username);
 
-        for(int jobPostId : candidate.getJobPostList()) {
+        for(int jobPostId : candidate.getJobPostListAndDate().keySet()) {
             JobPost jobPost = jobRepository.findById(jobPostId).orElse(new JobPost());
             jobPost.getCandidateList().remove(username);
             jobRepository.save(jobPost);
@@ -151,7 +151,7 @@ public class CandidateService {
     }
 
     public List<JobPostDTOCandidate> getJobPostBySalary(long min, long max) {
-        List<JobPost>  allJobPost = jobRepository.findAll();
+        List<JobPost> allJobPost = jobRepository.findAll();
         List<JobPostDTOCandidate> filteredList = new ArrayList<>();
 
         for(JobPost jobPost : allJobPost) {

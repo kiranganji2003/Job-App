@@ -1,7 +1,8 @@
 package com.example.jobapp.entity;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -20,7 +21,6 @@ public class Candidate {
     private String company;
 
     @ElementCollection
-    private Set<Integer> jobPostList = new HashSet<>();
-
+    Map<Integer, LocalDate> jobPostListAndDate = new HashMap<>();
 }
 
