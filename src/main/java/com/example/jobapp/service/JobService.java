@@ -64,7 +64,9 @@ public class JobService {
         companyDTO.setDescription(company.getDescription());
 
         for(int jobPostId : company.getJobPostListAndDate().keySet()) {
-            companyDTO.getJobPostList().add(convertToJobPostDtoCompany(jobRepository.findById(jobPostId).orElse(null)));
+            JobPostDTOCompany jobPostDTOCompany = convertToJobPostDtoCompany(jobRepository.findById(jobPostId).orElse(null));
+            jobPostDTOCompany.setJobPostDate(company.getJobPostListAndDate().get(jobPostId));
+            companyDTO.getJobPostList().add(jobPostDTOCompany);
         }
 
         return companyDTO;
@@ -160,6 +162,7 @@ public class JobService {
             JobPost jobPost = jobRepository.findById(postId).orElse(new JobPost());
             JobPostInsight jobPostInsight = new JobPostInsight();
             jobPostInsight.setPostId(postId);
+            jobPostInsight.setJobPostDate(company.getJobPostListAndDate().get(postId));
             jobPostInsight.setCandidatesApplied(jobPost.getCandidateList().size());
             jobPostInsight.setCandidateList(jobPost.getCandidateList());
             jobPostList.add(jobPostInsight);

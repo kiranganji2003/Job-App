@@ -2,12 +2,14 @@ package com.example.jobapp.model;
 
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
 @Data
 public class JobPostDTOCompany {
     private Integer postId;
+    private LocalDate jobPostDate;
     private String postProfile;
     private String postDesc;
     private String location;
