@@ -1,8 +1,10 @@
 package com.example.jobapp.service;
 
+import com.example.jobapp.entity.Company;
 import com.example.jobapp.entity.JobPost;
 import com.example.jobapp.model.CandidateDTO;
 import com.example.jobapp.model.JobPostDTOCandidate;
+import com.example.jobapp.repository.CompanyRepository;
 import com.example.jobapp.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,12 +21,14 @@ public class CandidateService {
 
     private CandidateRepository candidateRepository;
     private JobRepository jobRepository;
+    private CompanyRepository companyRepository;
     public static String username;
 
     @Autowired
-    public CandidateService(CandidateRepository candidateRepository, JobRepository jobRepository) {
+    public CandidateService(CandidateRepository candidateRepository, JobRepository jobRepository, CompanyRepository companyRepository) {
         this.candidateRepository = candidateRepository;
         this.jobRepository = jobRepository;
+        this.companyRepository = companyRepository;
     }
 
 
@@ -44,8 +48,12 @@ public class CandidateService {
         // TODO Auto-generated method stub
         List<JobPostDTOCandidate> list = new ArrayList<>();
 
-        for(JobPost jobPost : jobRepository.findAll()) {
-            list.add(getJobPostDTOCandidate(jobPost.getPostId()));
+        for(Company company : companyRepository.findAll()) {
+            for(int jobPostId : company.getJobPostListAndDate().keySet()) {
+                JobPostDTOCandidate jobPostDTOCandidate = getJobPostDTOCandidate(jobPostId);
+                jobPostDTOCandidate.setJobPostDate(company.getJobPostListAndDate().get(jobPostId));
+                list.add(jobPostDTOCandidate);
+            }
         }
 
         return list;
