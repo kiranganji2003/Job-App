@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### ignoring logs ###
+logs/job-app.log
