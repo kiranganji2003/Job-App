@@ -2,8 +2,9 @@ package com.example.jobapp.service;
 
 import com.example.jobapp.entity.Company;
 import com.example.jobapp.entity.JobPost;
-import com.example.jobapp.model.CandidateDTO;
-import com.example.jobapp.model.JobPostDTOCandidate;
+import com.example.jobapp.model.CandidateDto;
+import com.example.jobapp.model.CandidateRequestDto;
+import com.example.jobapp.model.JobPostDtoCandidate;
 import com.example.jobapp.repository.CompanyRepository;
 import com.example.jobapp.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,25 +33,37 @@ public class CandidateService {
     }
 
 
-    public String registerCandidate(Candidate candidate) {
+    public String registerCandidate(CandidateRequestDto candidate) {
         // TODO Auto-generated method stub
 
         if(candidateRepository.findById(candidate.getEmail()).orElse(null) == null) {
             candidate.setPassword(new BCryptPasswordEncoder().encode(candidate.getPassword()));
-            candidateRepository.save(candidate);
+            candidateRepository.save(convertToCandidateEntity(candidate));
             return "Registered Successfully";
         }
 
         return "Email already registered";
     }
 
-    public List<JobPostDTOCandidate> getAllJobPost() {
+    private Candidate convertToCandidateEntity(CandidateRequestDto candidateRequestDto) {
+        Candidate candidate = new Candidate();
+
+        candidate.setEmail(candidateRequestDto.getEmail());
+        candidate.setPassword(candidateRequestDto.getPassword());
+        candidate.setName(candidateRequestDto.getName());
+        candidate.setExperience(candidateRequestDto.getExperience());
+        candidate.setCompany(candidateRequestDto.getCompany());
+
+        return candidate;
+    }
+
+    public List<JobPostDtoCandidate> getAllJobPost() {
         // TODO Auto-generated method stub
-        List<JobPostDTOCandidate> list = new ArrayList<>();
+        List<JobPostDtoCandidate> list = new ArrayList<>();
 
         for(Company company : companyRepository.findAll()) {
             for(int jobPostId : company.getJobPostListAndDate().keySet()) {
-                JobPostDTOCandidate jobPostDTOCandidate = getJobPostDTOCandidate(jobPostId);
+                JobPostDtoCandidate jobPostDTOCandidate = getJobPostDTOCandidate(jobPostId);
                 jobPostDTOCandidate.setJobPostDate(company.getJobPostListAndDate().get(jobPostId));
                 list.add(jobPostDTOCandidate);
             }
@@ -59,16 +72,16 @@ public class CandidateService {
         return list;
     }
 
-    public List<JobPostDTOCandidate> getJobsByQuery(String str) {
+    public List<JobPostDtoCandidate> getJobsByQuery(String str) {
         // TODO Auto-generated method stub
         List<JobPost> jobPostList = jobRepository.searchJob(str);
-        List<JobPostDTOCandidate> jobPostDTOCandidateList = new ArrayList<>();
+        List<JobPostDtoCandidate> jobPostDtoCandidateList = new ArrayList<>();
 
         for(JobPost jobPost : jobPostList) {
-            jobPostDTOCandidateList.add(getJobPostDTOCandidate(jobPost.getPostId()));
+            jobPostDtoCandidateList.add(getJobPostDTOCandidate(jobPost.getPostId()));
         }
 
-        return  jobPostDTOCandidateList;
+        return jobPostDtoCandidateList;
     }
 
     public String applyJobPost(Integer jobPostId) {
@@ -90,8 +103,8 @@ public class CandidateService {
         return "Successfully applied for " + jobPost.getPostProfile() + " role!";
     }
 
-    public CandidateDTO getCandidateProfile() {
-        CandidateDTO candidateDTO = new CandidateDTO();
+    public CandidateDto getCandidateProfile() {
+        CandidateDto candidateDTO = new CandidateDto();
 
         Candidate candidate = candidateRepository.findByEmail(username);
         candidateDTO.setName(candidate.getName());
@@ -99,7 +112,7 @@ public class CandidateService {
         candidateDTO.setEmail(candidate.getEmail());
         candidateDTO.setPassword(candidate.getPassword());
         candidateDTO.setExperience(candidate.getExperience());
-        List<JobPostDTOCandidate> list = new ArrayList<>();
+        List<JobPostDtoCandidate> list = new ArrayList<>();
 
         for(int jobid : candidate.getJobPostListAndDate().keySet()) {
             list.add(getJobPostDTOCandidate(jobid));
@@ -110,9 +123,9 @@ public class CandidateService {
         return candidateDTO;
     }
 
-    private JobPostDTOCandidate getJobPostDTOCandidate(int jobid) {
+    private JobPostDtoCandidate getJobPostDTOCandidate(int jobid) {
         JobPost job = jobRepository.findById(jobid).orElse(new JobPost());
-        JobPostDTOCandidate jobPostDTOCandidate = new JobPostDTOCandidate();
+        JobPostDtoCandidate jobPostDTOCandidate = new JobPostDtoCandidate();
 
         jobPostDTOCandidate.setPostProfile(job.getPostProfile());
         jobPostDTOCandidate.setPostId(job.getPostId());
@@ -126,7 +139,7 @@ public class CandidateService {
         return jobPostDTOCandidate;
     }
 
-    public JobPostDTOCandidate withdrawJobApplication(Integer jobPostId) {
+    public JobPostDtoCandidate withdrawJobApplication(Integer jobPostId) {
 
         Candidate candidate = candidateRepository.findByEmail(username);
 
@@ -158,9 +171,9 @@ public class CandidateService {
         return username + " deleted successfully";
     }
 
-    public List<JobPostDTOCandidate> getJobPostBySalary(long min, long max) {
+    public List<JobPostDtoCandidate> getJobPostBySalary(long min, long max) {
         List<JobPost> allJobPost = jobRepository.findAll();
-        List<JobPostDTOCandidate> filteredList = new ArrayList<>();
+        List<JobPostDtoCandidate> filteredList = new ArrayList<>();
 
         for(JobPost jobPost : allJobPost) {
             if(jobPost.getSalary() < min || jobPost.getSalary() > max) {
@@ -173,7 +186,7 @@ public class CandidateService {
         return filteredList;
     }
 
-    public List<JobPostDTOCandidate> getJobsByTechStack(List<String> techstack) {
+    public List<JobPostDtoCandidate> getJobsByTechStack(List<String> techstack) {
 
         techstack = techstack
                 .stream()
@@ -181,7 +194,7 @@ public class CandidateService {
                 .toList();
 
         List<JobPost> jobPostList = jobRepository.findByMatchingTechStack(techstack);
-        List<JobPostDTOCandidate> jobPostDTOCandidateList = new ArrayList<>();
+        List<JobPostDtoCandidate> jobPostDtoCandidateList = new ArrayList<>();
 
 
         for(JobPost jobPost : jobPostList) {
@@ -200,11 +213,11 @@ public class CandidateService {
             }
 
             if (containsAll) {
-                jobPostDTOCandidateList.add(getJobPostDTOCandidate(jobPost.getPostId()));
+                jobPostDtoCandidateList.add(getJobPostDTOCandidate(jobPost.getPostId()));
             }
         }
 
-        return jobPostDTOCandidateList;
+        return jobPostDtoCandidateList;
     }
 }
 

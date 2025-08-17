@@ -1,11 +1,8 @@
 package com.example.jobapp.controller;
 
-import com.example.jobapp.model.CandidateDTO;
-import com.example.jobapp.model.JobPostDTOCandidate;
-import com.example.jobapp.model.LoginInfo;
+import com.example.jobapp.model.*;
 import com.example.jobapp.repository.CandidateRepository;
 import com.example.jobapp.security.JwtUtilCandidate;
-import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +15,6 @@ import com.example.jobapp.entity.Candidate;
 import com.example.jobapp.service.CandidateService;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("candidate")
@@ -56,7 +52,7 @@ public class CandidateController {
     }
 
     @PostMapping("register")
-    ResponseEntity<String> registerCandidate(@RequestBody Candidate candidate) {
+    ResponseEntity<String> registerCandidate(@RequestBody CandidateRequestDto candidate) {
         logger.info("registerCandidate() started for email={}", candidate.getEmail());
         logger.debug("Candidate details: {}", candidate);
 
@@ -72,44 +68,44 @@ public class CandidateController {
     }
 
     @GetMapping("jobpost")
-    List<JobPostDTOCandidate> getAllJobPost() {
+    List<JobPostDtoCandidate> getAllJobPost() {
         logger.info("getAllJobPost() called");
-        List<JobPostDTOCandidate> jobs = candidateService.getAllJobPost();
+        List<JobPostDtoCandidate> jobs = candidateService.getAllJobPost();
         logger.info("getAllJobPost() returned {} job posts", jobs.size());
         return jobs;
     }
 
     @GetMapping("jobpost/search")
-    List<JobPostDTOCandidate> getJobsByQuery(@RequestParam String query) {
+    List<JobPostDtoCandidate> getJobsByQuery(@RequestParam String query) {
         logger.info("getJobsByQuery() started with query='{}'", query);
-        List<JobPostDTOCandidate> jobs = candidateService.getJobsByQuery(query);
+        List<JobPostDtoCandidate> jobs = candidateService.getJobsByQuery(query);
         logger.info("getJobsByQuery() found {} results for query='{}'", jobs.size(), query);
         return jobs;
     }
 
     @PostMapping("apply")
-    String applyJobPost(@RequestBody Map<String, Integer> map) {
-        logger.info("applyJobPost() started for jobPostId={}", map.getOrDefault("jobPostId", -1));
-        return candidateService.applyJobPost(map.getOrDefault("jobPostId", -1));
+    String applyJobPost(@RequestBody JobPostIdDto jobPostIdDTO) {
+        logger.info("applyJobPost() started for jobPostId={}", jobPostIdDTO.getJobPostId());
+        return candidateService.applyJobPost(jobPostIdDTO.getJobPostId());
     }
 
     @GetMapping("profile")
-    CandidateDTO getCandidateProfile() {
+    CandidateDto getCandidateProfile() {
         logger.info("getCandidateProfile() started");
         return candidateService.getCandidateProfile();
     }
 
     @PostMapping("withdrawn")
-    ResponseEntity<JobPostDTOCandidate> withdrawJobApplication(@RequestBody Map<String, Integer> map) {
-        logger.info("withdrawJobApplication() started for jobPostId={}", map.getOrDefault("jobPostId", -1));
-        JobPostDTOCandidate jobPostDTOCandidate = candidateService.withdrawJobApplication(map.getOrDefault("jobPostId", -1));
+    ResponseEntity<JobPostDtoCandidate> withdrawJobApplication(@RequestBody JobPostIdDto jobPostIdDTO) {
+        logger.info("withdrawJobApplication() started for jobPostId={}", jobPostIdDTO.getJobPostId());
+        JobPostDtoCandidate jobPostDTOCandidate = candidateService.withdrawJobApplication(jobPostIdDTO.getJobPostId());
 
         if(jobPostDTOCandidate == null) {
             logger.warn("withdrawJobApplication() invalid jobPostId");
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
-        logger.info("withdrawJobApplication() succeeded for jobPostId={}", map.get("jobPostId"));
+        logger.info("withdrawJobApplication() succeeded for jobPostId={}", jobPostIdDTO.getJobPostId());
         return new ResponseEntity<>(jobPostDTOCandidate, HttpStatus.OK);
     }
 
@@ -122,7 +118,7 @@ public class CandidateController {
     }
 
     @GetMapping("jobpost/salary")
-    List<JobPostDTOCandidate> getJobPostBySalary(@RequestParam(required = false) Long min, @RequestParam(required = false) Long max) {
+    List<JobPostDtoCandidate> getJobPostBySalary(@RequestParam(required = false) Long min, @RequestParam(required = false) Long max) {
         min = (min == null ? 0 : min);
         max = (max == null ? Long.MAX_VALUE : max);
 
@@ -130,13 +126,8 @@ public class CandidateController {
     }
 
     @GetMapping("jobpost/search/techstack")
-    List<JobPostDTOCandidate> getJobsByTechStack(@RequestBody TechStackList techStackList) {
+    List<JobPostDtoCandidate> getJobsByTechStack(@RequestBody TechStackList techStackList) {
         return candidateService.getJobsByTechStack(techStackList.getTechStackList());
     }
 
-}
-
-@Data
-class TechStackList {
-    List<String> techStackList;
 }

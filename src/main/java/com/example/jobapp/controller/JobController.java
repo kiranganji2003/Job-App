@@ -1,10 +1,8 @@
 package com.example.jobapp.controller;
 
 import java.util.List;
-import java.util.Map;
 
-import com.example.jobapp.model.JobPostInsight;
-import com.example.jobapp.model.LoginInfo;
+import com.example.jobapp.model.*;
 import com.example.jobapp.repository.CompanyRepository;
 import com.example.jobapp.security.JwtUtilCompany;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.jobapp.entity.Company;
-import com.example.jobapp.entity.JobPost;
-import com.example.jobapp.model.CompanyDTO;
 import com.example.jobapp.service.JobService;
 
 
@@ -50,12 +46,7 @@ public class JobController {
 
         Company userOpt = companyRepository.findByUsername(username);
 
-        System.out.println(userOpt != null && passwordEncoder.matches(password, userOpt.getPassword()));
-        System.out.println(userOpt.getPassword());
-        System.out.println(passwordEncoder.encode(password));
-
         if (userOpt != null && passwordEncoder.matches(password, userOpt.getPassword())) {
-            System.out.println("hii.... ");
             String token = jwtUtilCompany.generateToken(username);
             return new ResponseEntity<>(token, HttpStatus.OK);
         }
@@ -64,28 +55,28 @@ public class JobController {
     }
 
     @PostMapping("register")
-    String registerCompany(@RequestBody Company company) {
+    String registerCompany(@RequestBody CompanyRequestDto company) {
         return jobService.registerCompany(company);
     }
 
     @GetMapping("view")
-    CompanyDTO getCompanyByUsername() {
+    CompanyDto getCompanyByUsername() {
         return jobService.getCompanyByUsername();
     }
 
     @PostMapping("jobpost")
-    String createJobPost(@RequestBody JobPost jobPost) {
+    String createJobPost(@RequestBody JobPostRequestDto jobPost) {
         return jobService.createJobPost(jobPost);
     }
 
     @PutMapping("jobpost")
-    ResponseEntity<String> updateJobPost(@RequestBody JobPost jobPost) {
+    ResponseEntity<String> updateJobPost(@RequestBody JobPostUpdateDto jobPost) {
         return jobService.updateJobPost(jobPost);
     }
 
     @DeleteMapping("jobpost")
-    ResponseEntity<String> deleteJobPost(@RequestBody Map<String, Integer> map) {
-        return jobService.deleteJobPost(map.getOrDefault("jobPostId", -1));
+    ResponseEntity<String> deleteJobPost(@RequestBody JobPostIdDto jobPostIdDTO) {
+        return jobService.deleteJobPost(jobPostIdDTO.getJobPostId());
     }
 
     @GetMapping("jobpost/insight")

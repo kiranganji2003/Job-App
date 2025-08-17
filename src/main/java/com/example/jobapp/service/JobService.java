@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.example.jobapp.entity.Candidate;
-import com.example.jobapp.model.JobPostInsight;
+import com.example.jobapp.model.*;
 import com.example.jobapp.repository.CandidateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.jobapp.entity.Company;
 import com.example.jobapp.entity.JobPost;
-import com.example.jobapp.model.CompanyDTO;
-import com.example.jobapp.model.JobPostDTOCompany;
 import com.example.jobapp.repository.CompanyRepository;
 import com.example.jobapp.repository.JobRepository;
 
@@ -40,23 +38,33 @@ public class JobService {
     }
 
 
-    public String registerCompany(Company company) {
+    public String registerCompany(CompanyRequestDto company) {
         // TODO Auto-generated method stub
         if(companyRepository.findByUsername(company.getUsername()) != null) {
             return "Username already exists";
         }
 
         company.setPassword(passwordEncoder.encode(company.getPassword()));
-        companyRepository.save(company);
+        companyRepository.save(convertToCompanyEntity(company));
         return "Registered Successfully";
     }
 
+    private Company convertToCompanyEntity(CompanyRequestDto companyRequestDto) {
+        Company company = new Company();
+
+        company.setUsername(companyRequestDto.getUsername());
+        company.setPassword(companyRequestDto.getPassword());
+        company.setName(companyRequestDto.getName());
+        company.setDescription(companyRequestDto.getDescription());
+
+        return company;
+    }
 
 
-    public CompanyDTO getCompanyByUsername() {
+    public CompanyDto getCompanyByUsername() {
         // TODO Auto-generated method stub
         Company company = companyRepository.findByUsername(username);
-        CompanyDTO companyDTO = new CompanyDTO();
+        CompanyDto companyDTO = new CompanyDto();
 
         companyDTO.setUsername(company.getUsername());
         companyDTO.setPassword(company.getPassword());
@@ -64,7 +72,7 @@ public class JobService {
         companyDTO.setDescription(company.getDescription());
 
         for(int jobPostId : company.getJobPostListAndDate().keySet()) {
-            JobPostDTOCompany jobPostDTOCompany = convertToJobPostDtoCompany(jobRepository.findById(jobPostId).orElse(null));
+            JobPostDtoCompany jobPostDTOCompany = convertToJobPostDtoCompany(jobRepository.findById(jobPostId).orElse(null));
             jobPostDTOCompany.setJobPostDate(company.getJobPostListAndDate().get(jobPostId));
             companyDTO.getJobPostList().add(jobPostDTOCompany);
         }
@@ -74,9 +82,9 @@ public class JobService {
 
 
 
-    private JobPostDTOCompany convertToJobPostDtoCompany(JobPost jobPost) {
+    private JobPostDtoCompany convertToJobPostDtoCompany(JobPost jobPost) {
         // TODO Auto-generated method stub
-        JobPostDTOCompany jobPostDTOCompany = new JobPostDTOCompany();
+        JobPostDtoCompany jobPostDTOCompany = new JobPostDtoCompany();
         jobPostDTOCompany.setPostId(jobPost.getPostId());
         jobPostDTOCompany.setPostProfile(jobPost.getPostProfile());
         jobPostDTOCompany.setPostDesc(jobPost.getPostDesc());
@@ -90,10 +98,11 @@ public class JobService {
 
 
 
-    public String createJobPost(JobPost jobPost) {
+    public String createJobPost(JobPostRequestDto jobPostRequestDto) {
         // TODO Auto-generated method stub
 
         Company company = companyRepository.getReferenceById(username);
+        JobPost jobPost = convertToJobPostEntity(jobPostRequestDto);
         jobPost.setCompany(company.getName());
         JobPost savedJobPost = jobRepository.save(jobPost);
         company.getJobPostListAndDate().put(savedJobPost.getPostId(), LocalDate.now());
@@ -102,13 +111,24 @@ public class JobService {
         return "Job Posted Successfully";
     }
 
+    private JobPost convertToJobPostEntity(JobPostRequestDto jobPostRequestDto) {
+        JobPost jobPost = new JobPost();
+        jobPost.setPostProfile(jobPostRequestDto.getPostProfile());
+        jobPost.setPostDesc(jobPostRequestDto.getPostDesc());
+        jobPost.setLocation(jobPostRequestDto.getLocation());
+        jobPost.setReqExperience(jobPostRequestDto.getReqExperience());
+        jobPost.setSalary(jobPostRequestDto.getSalary());
+        jobPost.setPostTechStack(jobPostRequestDto.getPostTechStack());
+        return jobPost;
+    }
+
     private boolean companyContainsJobPost(int jobpost) {
         Company company = companyRepository.findByUsername(username);
         return company.getJobPostListAndDate().keySet().contains(jobpost);
     }
 
 
-    public ResponseEntity<String> updateJobPost(JobPost jobPost) {
+    public ResponseEntity<String> updateJobPost(JobPostUpdateDto jobPost) {
         // TODO Auto-generated method stub
 
         if(!companyContainsJobPost(jobPost.getPostId())) {

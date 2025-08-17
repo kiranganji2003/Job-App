@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class CandidateDTO {
+public class CandidateDto {
     private String email;
     private String password;
     private String name;
     private Integer experience;
     private String company;
-    private List<JobPostDTOCandidate> jobPostList = new ArrayList<>();
+    private List<JobPostDtoCandidate> jobPostList = new ArrayList<>();
 }

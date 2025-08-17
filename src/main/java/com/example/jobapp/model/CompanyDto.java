@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class CompanyDTO {
+public class CompanyDto {
 
     private String username;
     private String password;
     private String name;
     private String description;
-    private List<JobPostDTOCompany> jobPostList = new ArrayList<>();
+    private List<JobPostDtoCompany> jobPostList = new ArrayList<>();
 }
 
