@@ -34,3 +34,4 @@ build/
 
 ### ignoring logs ###
 logs/
+.DS_Store
