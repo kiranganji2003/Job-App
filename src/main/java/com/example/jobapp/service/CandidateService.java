@@ -115,7 +115,9 @@ public class CandidateService {
         List<JobPostDtoCandidate> list = new ArrayList<>();
 
         for(int jobid : candidate.getJobPostListAndDate().keySet()) {
-            list.add(getJobPostDTOCandidate(jobid));
+            JobPostDtoCandidate jobPostDtoCandidate = getJobPostDTOCandidate(jobid);
+            jobPostDtoCandidate.setJobPostDate(candidate.getJobPostListAndDate().get(jobid));
+            list.add(jobPostDtoCandidate);
         }
 
         candidateDTO.setJobPostList(list);
@@ -147,6 +149,8 @@ public class CandidateService {
             return null;
         }
 
+        JobPostDtoCandidate jobPostDtoCandidate = getJobPostDTOCandidate(jobPostId);
+        jobPostDtoCandidate.setJobPostDate(candidate.getJobPostListAndDate().get(jobPostId));
         candidate.getJobPostListAndDate().remove(jobPostId);
         candidateRepository.save(candidate);
 
@@ -154,7 +158,7 @@ public class CandidateService {
         jobPost.getCandidateList().remove(username);
         jobRepository.save(jobPost);
 
-        return getJobPostDTOCandidate(jobPostId);
+        return jobPostDtoCandidate;
     }
 
     public String deleteCandidate() {
@@ -179,7 +183,10 @@ public class CandidateService {
             if(jobPost.getSalary() < min || jobPost.getSalary() > max) {
                 continue;
             }
-            filteredList.add(getJobPostDTOCandidate(jobPost.getPostId()));
+            JobPostDtoCandidate jobPostDtoCandidate = getJobPostDTOCandidate(jobPost.getPostId());
+            Company company = companyRepository.findByUsername(jobPost.getCompanyUsername());
+            jobPostDtoCandidate.setJobPostDate(company.getJobPostListAndDate().get(jobPost.getPostId()));
+            filteredList.add(jobPostDtoCandidate);
         }
 
         Collections.sort(filteredList, (o1, o2) -> (int)(o1.getSalary() - o2.getSalary()));
@@ -213,7 +220,10 @@ public class CandidateService {
             }
 
             if (containsAll) {
-                jobPostDtoCandidateList.add(getJobPostDTOCandidate(jobPost.getPostId()));
+                JobPostDtoCandidate jobPostDtoCandidate = getJobPostDTOCandidate(jobPost.getPostId());
+                Company company = companyRepository.findByUsername(jobPost.getCompanyUsername());
+                jobPostDtoCandidate.setJobPostDate(company.getJobPostListAndDate().get(jobPost.getPostId()));
+                jobPostDtoCandidateList.add(jobPostDtoCandidate);
             }
         }
 

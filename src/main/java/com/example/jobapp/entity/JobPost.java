@@ -21,6 +21,7 @@ public class JobPost {
     private String location;
     private Integer reqExperience;
     private double salary;
+    private String companyUsername;
 
     @ElementCollection
     private List<String> postTechStack = new ArrayList<>();

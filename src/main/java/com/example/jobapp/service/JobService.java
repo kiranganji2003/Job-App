@@ -104,6 +104,7 @@ public class JobService {
         Company company = companyRepository.getReferenceById(username);
         JobPost jobPost = convertToJobPostEntity(jobPostRequestDto);
         jobPost.setCompany(company.getName());
+        jobPost.setCompanyUsername(username);
         JobPost savedJobPost = jobRepository.save(jobPost);
         company.getJobPostListAndDate().put(savedJobPost.getPostId(), LocalDate.now());
         companyRepository.save(company);
