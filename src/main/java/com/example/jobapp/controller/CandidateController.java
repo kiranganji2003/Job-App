@@ -1,17 +1,13 @@
 package com.example.jobapp.controller;
 
 import com.example.jobapp.model.*;
-import com.example.jobapp.repository.CandidateRepository;
-import com.example.jobapp.security.JwtUtilCandidate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.jobapp.entity.Candidate;
 import com.example.jobapp.service.CandidateService;
 
 import java.util.List;
@@ -21,34 +17,16 @@ import java.util.List;
 public class CandidateController {
 
     private CandidateService candidateService;
-    private CandidateRepository candidateRepository;
-    private JwtUtilCandidate jwtUtil;
-    private PasswordEncoder passwordEncoder;
     private static final Logger logger = LoggerFactory.getLogger(CandidateController.class);
 
     @Autowired
-    public CandidateController(CandidateService candidateService, CandidateRepository candidateRepository, JwtUtilCandidate jwtUtil, PasswordEncoder passwordEncoder) {
+    public CandidateController(CandidateService candidateService) {
         this.candidateService = candidateService;
-        this.candidateRepository = candidateRepository;
-        this.jwtUtil = jwtUtil;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("login")
-    public ResponseEntity<String> login(@RequestBody LoginInfo loginInfo) {
-        logger.info("login() started for username={}", loginInfo.getUsername());
-        String username = loginInfo.getUsername();
-        String password = loginInfo.getPassword();
-
-        Candidate userOpt = candidateRepository.findByEmail(username);
-        if (userOpt != null && passwordEncoder.matches(password, userOpt.getPassword())) {
-            String token = jwtUtil.generateToken(username);
-            logger.info("login successful for username={}", username);
-            return new ResponseEntity<>(token, HttpStatus.OK);
-        }
-
-        logger.warn("login failed for username={}: invalid credentials", username);
-        return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
+    public String login(@RequestBody LoginInfo loginInfo) {
+        return candidateService.candidateLoginService(loginInfo);
     }
 
     @PostMapping("register")

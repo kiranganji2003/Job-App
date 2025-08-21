@@ -5,10 +5,13 @@ import com.example.jobapp.entity.JobPost;
 import com.example.jobapp.model.CandidateDto;
 import com.example.jobapp.model.CandidateRequestDto;
 import com.example.jobapp.model.JobPostDtoCandidate;
+import com.example.jobapp.model.LoginInfo;
 import com.example.jobapp.repository.CompanyRepository;
 import com.example.jobapp.repository.JobRepository;
+import com.example.jobapp.security.JwtUtilCandidate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.jobapp.entity.Candidate;
@@ -23,13 +26,19 @@ public class CandidateService {
     private CandidateRepository candidateRepository;
     private JobRepository jobRepository;
     private CompanyRepository companyRepository;
+    private JwtUtilCandidate jwtUtil;
+    private PasswordEncoder passwordEncoder;
     public static String username;
 
     @Autowired
-    public CandidateService(CandidateRepository candidateRepository, JobRepository jobRepository, CompanyRepository companyRepository) {
+    public CandidateService(CandidateRepository candidateRepository, JobRepository jobRepository, CompanyRepository companyRepository,
+                            JwtUtilCandidate jwtUtil, PasswordEncoder passwordEncoder) {
         this.candidateRepository = candidateRepository;
         this.jobRepository = jobRepository;
         this.companyRepository = companyRepository;
+        this.jwtUtil = jwtUtil;
+        this.passwordEncoder = passwordEncoder;
+
     }
 
 
@@ -228,6 +237,20 @@ public class CandidateService {
         }
 
         return jobPostDtoCandidateList;
+    }
+
+    public String candidateLoginService(LoginInfo loginInfo) {
+        String username = loginInfo.getUsername();
+        String password = loginInfo.getPassword();
+
+        Candidate userOpt = candidateRepository.findByEmail(username);
+
+        if (userOpt == null || !passwordEncoder.matches(password, userOpt.getPassword())) {
+            // throw exception
+            return "temp";
+        }
+
+        return jwtUtil.generateToken(username);
     }
 }
 
