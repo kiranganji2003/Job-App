@@ -2,6 +2,7 @@ package com.example.jobapp.service;
 
 import com.example.jobapp.entity.Company;
 import com.example.jobapp.entity.JobPost;
+import com.example.jobapp.exception.InvalidCredentialsException;
 import com.example.jobapp.model.CandidateDto;
 import com.example.jobapp.model.CandidateRequestDto;
 import com.example.jobapp.model.JobPostDtoCandidate;
@@ -246,8 +247,7 @@ public class CandidateService {
         Candidate userOpt = candidateRepository.findByEmail(username);
 
         if (userOpt == null || !passwordEncoder.matches(password, userOpt.getPassword())) {
-            // throw exception
-            return "temp";
+            throw new InvalidCredentialsException("Invalid Candidate Credentials");
         }
 
         return jwtUtil.generateToken(username);

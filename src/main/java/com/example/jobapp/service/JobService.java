@@ -6,8 +6,10 @@ import java.util.Collections;
 import java.util.List;
 
 import com.example.jobapp.entity.Candidate;
+import com.example.jobapp.exception.InvalidCredentialsException;
 import com.example.jobapp.model.*;
 import com.example.jobapp.repository.CandidateRepository;
+import com.example.jobapp.security.JwtUtilCompany;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,15 +28,17 @@ public class JobService {
     private JobRepository jobRepository;
     private CandidateRepository candidateRepository;
     private PasswordEncoder passwordEncoder;
+    private JwtUtilCompany jwtUtilCompany;
     public static String username;
 
 
     @Autowired
-    public JobService(CompanyRepository companyRepository, JobRepository jobRepository, CandidateRepository candidateRepository, PasswordEncoder passwordEncoder) {
+    public JobService(CompanyRepository companyRepository, JobRepository jobRepository, CandidateRepository candidateRepository, PasswordEncoder passwordEncoder, JwtUtilCompany jwtUtilCompany) {
         this.companyRepository = companyRepository;
         this.jobRepository = jobRepository;
         this.candidateRepository = candidateRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtilCompany = jwtUtilCompany;
     }
 
 
@@ -192,6 +196,19 @@ public class JobService {
         Collections.sort(jobPostList);
 
         return jobPostList;
+    }
+
+    public String loginCompany(LoginInfo loginInfo) {
+        String username = loginInfo.getUsername();
+        String password = loginInfo.getPassword();
+
+        Company userOpt = companyRepository.findByUsername(username);
+
+        if (userOpt == null || !passwordEncoder.matches(password, userOpt.getPassword())) {
+            throw new InvalidCredentialsException("Invalid Company Credentials");
+        }
+
+        return jwtUtilCompany.generateToken(username);
     }
 }
 

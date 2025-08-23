@@ -27,31 +27,16 @@ import com.example.jobapp.service.JobService;
 public class JobController {
 
     private JobService jobService;
-    private CompanyRepository companyRepository;
-    private PasswordEncoder passwordEncoder;
-    private JwtUtilCompany jwtUtilCompany;
+
 
     @Autowired
-    public JobController(JobService jobService, CompanyRepository companyRepository, PasswordEncoder passwordEncoder, JwtUtilCompany jwtUtilCompany) {
+    public JobController(JobService jobService) {
         this.jobService = jobService;
-        this.companyRepository = companyRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtUtilCompany = jwtUtilCompany;
     }
 
     @PostMapping("login")
-    ResponseEntity<String> loginCompany(@RequestBody LoginInfo loginInfo) {
-        String username = loginInfo.getUsername();
-        String password = loginInfo.getPassword();
-
-        Company userOpt = companyRepository.findByUsername(username);
-
-        if (userOpt != null && passwordEncoder.matches(password, userOpt.getPassword())) {
-            String token = jwtUtilCompany.generateToken(username);
-            return new ResponseEntity<>(token, HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
+    String loginCompany(@RequestBody LoginInfo loginInfo) {
+        return jobService.loginCompany(loginInfo);
     }
 
     @PostMapping("register")
