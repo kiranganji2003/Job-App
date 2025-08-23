@@ -2,6 +2,7 @@ package com.example.jobapp.service;
 
 import com.example.jobapp.entity.Company;
 import com.example.jobapp.entity.JobPost;
+import com.example.jobapp.exception.AlreadyRegisteredException;
 import com.example.jobapp.exception.InvalidCredentialsException;
 import com.example.jobapp.model.CandidateDto;
 import com.example.jobapp.model.CandidateRequestDto;
@@ -44,15 +45,14 @@ public class CandidateService {
 
 
     public String registerCandidate(CandidateRequestDto candidate) {
-        // TODO Auto-generated method stub
 
-        if(candidateRepository.findById(candidate.getEmail()).orElse(null) == null) {
-            candidate.setPassword(new BCryptPasswordEncoder().encode(candidate.getPassword()));
-            candidateRepository.save(convertToCandidateEntity(candidate));
-            return "Registered Successfully";
+        if(candidateRepository.findById(candidate.getEmail()).orElse(null) != null) {
+            throw new AlreadyRegisteredException("Email " + candidate.getEmail() + " already registered");
         }
 
-        return "Email already registered";
+        candidate.setPassword(new BCryptPasswordEncoder().encode(candidate.getPassword()));
+        candidateRepository.save(convertToCandidateEntity(candidate));
+        return "Registered Successfully";
     }
 
     private Candidate convertToCandidateEntity(CandidateRequestDto candidateRequestDto) {

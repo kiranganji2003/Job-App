@@ -12,4 +12,9 @@ public class GlobalExceptionHandler {
     ResponseEntity<String> invalidCredentialsException(InvalidCredentialsException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(AlreadyRegisteredException.class)
+    ResponseEntity<String> alreadyRegisteredException(AlreadyRegisteredException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
+    }
 }

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.example.jobapp.entity.Candidate;
+import com.example.jobapp.exception.AlreadyRegisteredException;
 import com.example.jobapp.exception.InvalidCredentialsException;
 import com.example.jobapp.model.*;
 import com.example.jobapp.repository.CandidateRepository;
@@ -43,9 +44,9 @@ public class JobService {
 
 
     public String registerCompany(CompanyRequestDto company) {
-        // TODO Auto-generated method stub
+
         if(companyRepository.findByUsername(company.getUsername()) != null) {
-            return "Username already exists";
+            throw new AlreadyRegisteredException("Username " + company.getUsername() + " already registered");
         }
 
         company.setPassword(passwordEncoder.encode(company.getPassword()));

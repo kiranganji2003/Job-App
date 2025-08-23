@@ -30,19 +30,8 @@ public class CandidateController {
     }
 
     @PostMapping("register")
-    ResponseEntity<String> registerCandidate(@RequestBody CandidateRequestDto candidate) {
-        logger.info("registerCandidate() started for email={}", candidate.getEmail());
-        logger.debug("Candidate details: {}", candidate);
-
-        String res = candidateService.registerCandidate(candidate);
-
-        if(res == null) {
-            logger.warn("registerCandidate() failed: email {} already registered", candidate.getEmail());
-            return new ResponseEntity<String>("Email " + candidate.getEmail() + " already registered", HttpStatus.BAD_REQUEST);
-        }
-
-        logger.info("registerCandidate() succeeded for email={}", candidate.getEmail());
-        return new ResponseEntity<String>(res, HttpStatus.OK);
+    String registerCandidate(@RequestBody CandidateRequestDto candidate) {
+        return candidateService.registerCandidate(candidate);
     }
 
     @GetMapping("jobpost")
