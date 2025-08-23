@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class JobAppApplication {
+public class JobPortalApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(JobAppApplication.class, args);
+		SpringApplication.run(JobPortalApplication.class, args);
 		System.out.println("Application Started..");
 	}
 }

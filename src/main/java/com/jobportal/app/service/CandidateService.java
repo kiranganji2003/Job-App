@@ -68,15 +68,16 @@ public class CandidateService {
     }
 
     public List<JobPostDtoCandidate> getAllJobPost() {
-        // TODO Auto-generated method stub
+
+        List<JobPost> allJobPost = jobRepository.findAll();
+
         List<JobPostDtoCandidate> list = new ArrayList<>();
 
-        for(Company company : companyRepository.findAll()) {
-            for(int jobPostId : company.getJobPostListAndDate().keySet()) {
-                JobPostDtoCandidate jobPostDTOCandidate = getJobPostDTOCandidate(jobPostId);
-                jobPostDTOCandidate.setJobPostDate(company.getJobPostListAndDate().get(jobPostId));
-                list.add(jobPostDTOCandidate);
-            }
+        for(JobPost jobPost : allJobPost) {
+            JobPostDtoCandidate jobPostDTOCandidate = getJobPostDTOCandidate(jobPost.getPostId());
+            Company company = companyRepository.findByUsername(jobPost.getCompanyUsername());
+            jobPostDTOCandidate.setJobPostDate(company.getJobPostListAndDate().get(jobPost.getPostId()));
+            list.add(jobPostDTOCandidate);
         }
 
         return list;
