@@ -36,29 +36,21 @@ public class CandidateController {
 
     @GetMapping("jobpost")
     List<JobPostDtoCandidate> getAllJobPost() {
-        logger.info("getAllJobPost() called");
-        List<JobPostDtoCandidate> jobs = candidateService.getAllJobPost();
-        logger.info("getAllJobPost() returned {} job posts", jobs.size());
-        return jobs;
+        return candidateService.getAllJobPost();
     }
 
     @GetMapping("jobpost/search")
     List<JobPostDtoCandidate> getJobsByQuery(@RequestParam String query) {
-        logger.info("getJobsByQuery() started with query='{}'", query);
-        List<JobPostDtoCandidate> jobs = candidateService.getJobsByQuery(query);
-        logger.info("getJobsByQuery() found {} results for query='{}'", jobs.size(), query);
-        return jobs;
+        return candidateService.getJobsByQuery(query);
     }
 
     @PostMapping("apply")
     String applyJobPost(@RequestBody JobPostIdDto jobPostIdDTO) {
-        logger.info("applyJobPost() started for jobPostId={}", jobPostIdDTO.getJobPostId());
         return candidateService.applyJobPost(jobPostIdDTO.getJobPostId());
     }
 
     @GetMapping("profile")
     CandidateDto getCandidateProfile() {
-        logger.info("getCandidateProfile() started");
         return candidateService.getCandidateProfile();
     }
 
@@ -69,17 +61,11 @@ public class CandidateController {
 
     @DeleteMapping("delete")
     String deleteCandidate() {
-        logger.info("deleteCandidate() called");
-        String response = candidateService.deleteCandidate();
-        logger.info("deleteCandidate() response: {}", response);
-        return response;
+        return candidateService.deleteCandidate();
     }
 
     @GetMapping("jobpost/salary")
-    List<JobPostDtoCandidate> getJobPostBySalary(@RequestParam(required = false) Long min, @RequestParam(required = false) Long max) {
-        min = (min == null ? 0 : min);
-        max = (max == null ? Long.MAX_VALUE : max);
-
+    List<JobPostDtoCandidate> getJobPostBySalary(@RequestParam(required = false, defaultValue = "0") Long min, @RequestParam(required = false, defaultValue = "9223372036854775807") Long max) {
         return candidateService.getJobPostBySalary(min, max);
     }
 
