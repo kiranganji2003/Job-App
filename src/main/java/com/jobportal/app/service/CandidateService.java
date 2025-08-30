@@ -4,6 +4,7 @@ import com.jobportal.app.entity.Company;
 import com.jobportal.app.entity.JobPost;
 import com.jobportal.app.exception.AlreadyRegisteredException;
 import com.jobportal.app.exception.InvalidCredentialsException;
+import com.jobportal.app.exception.InvalidJobPostIdException;
 import com.jobportal.app.model.CandidateDto;
 import com.jobportal.app.model.CandidateRequestDto;
 import com.jobportal.app.model.JobPostDtoCandidate;
@@ -157,7 +158,7 @@ public class CandidateService {
         Candidate candidate = candidateRepository.findByEmail(username);
 
         if(!candidate.getJobPostListAndDate().keySet().contains(jobPostId)) {
-            return null;
+            throw new InvalidJobPostIdException(username + " not applied to job post id " + jobPostId);
         }
 
         JobPostDtoCandidate jobPostDtoCandidate = getJobPostDTOCandidate(jobPostId);

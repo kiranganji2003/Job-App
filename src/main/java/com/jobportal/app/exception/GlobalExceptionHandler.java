@@ -17,4 +17,9 @@ public class GlobalExceptionHandler {
     ResponseEntity<String> alreadyRegisteredException(AlreadyRegisteredException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(InvalidJobPostIdException.class)
+    ResponseEntity<String> invalidJobPostIdException(InvalidJobPostIdException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
+    }
 }

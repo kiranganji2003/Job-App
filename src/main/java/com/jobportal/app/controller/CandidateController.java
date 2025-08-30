@@ -63,17 +63,8 @@ public class CandidateController {
     }
 
     @PostMapping("withdrawn")
-    ResponseEntity<JobPostDtoCandidate> withdrawJobApplication(@RequestBody JobPostIdDto jobPostIdDTO) {
-        logger.info("withdrawJobApplication() started for jobPostId={}", jobPostIdDTO.getJobPostId());
-        JobPostDtoCandidate jobPostDTOCandidate = candidateService.withdrawJobApplication(jobPostIdDTO.getJobPostId());
-
-        if(jobPostDTOCandidate == null) {
-            logger.warn("withdrawJobApplication() invalid jobPostId");
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-
-        logger.info("withdrawJobApplication() succeeded for jobPostId={}", jobPostIdDTO.getJobPostId());
-        return new ResponseEntity<>(jobPostDTOCandidate, HttpStatus.OK);
+    JobPostDtoCandidate withdrawJobApplication(@RequestBody JobPostIdDto jobPostIdDTO) {
+        return candidateService.withdrawJobApplication(jobPostIdDTO.getJobPostId());
     }
 
     @DeleteMapping("delete")
