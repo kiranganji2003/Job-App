@@ -50,12 +50,12 @@ public class CompanyController {
     }
 
     @PutMapping("jobpost")
-    ResponseEntity<String> updateJobPost(@RequestBody JobPostUpdateDto jobPost) {
+    String updateJobPost(@RequestBody JobPostUpdateDto jobPost) {
         return companyService.updateJobPost(jobPost);
     }
 
     @DeleteMapping("jobpost")
-    ResponseEntity<String> deleteJobPost(@RequestBody JobPostIdDto jobPostIdDTO) {
+    String deleteJobPost(@RequestBody JobPostIdDto jobPostIdDTO) {
         return companyService.deleteJobPost(jobPostIdDTO.getJobPostId());
     }
 

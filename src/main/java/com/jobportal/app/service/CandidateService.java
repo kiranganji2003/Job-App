@@ -21,7 +21,9 @@ import com.jobportal.app.entity.Candidate;
 import com.jobportal.app.repository.CandidateRepository;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class CandidateService {
@@ -85,7 +87,6 @@ public class CandidateService {
     }
 
     public List<JobPostDtoCandidate> getJobsByQuery(String str) {
-        // TODO Auto-generated method stub
         List<JobPost> jobPostList = jobRepository.searchJob(str);
         List<JobPostDtoCandidate> jobPostDtoCandidateList = new ArrayList<>();
 
@@ -97,7 +98,6 @@ public class CandidateService {
     }
 
     public String applyJobPost(Integer jobPostId) {
-        // TODO Auto-generated method stub
 
         JobPost jobPost = jobRepository.findById(jobPostId).orElse(null);
 
@@ -158,7 +158,7 @@ public class CandidateService {
         Candidate candidate = candidateRepository.findByEmail(username);
 
         if(!candidate.getJobPostListAndDate().keySet().contains(jobPostId)) {
-            throw new InvalidJobPostIdException(username + " not applied to job post id " + jobPostId);
+            throw new InvalidJobPostIdException("Not applied to job post id " + jobPostId);
         }
 
         JobPostDtoCandidate jobPostDtoCandidate = getJobPostDTOCandidate(jobPostId);

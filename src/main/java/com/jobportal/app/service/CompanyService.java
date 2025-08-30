@@ -8,12 +8,11 @@ import java.util.List;
 import com.jobportal.app.entity.Candidate;
 import com.jobportal.app.exception.AlreadyRegisteredException;
 import com.jobportal.app.exception.InvalidCredentialsException;
+import com.jobportal.app.exception.InvalidJobPostIdException;
 import com.jobportal.app.model.*;
 import com.jobportal.app.repository.CandidateRepository;
 import com.jobportal.app.security.JwtUtilCompany;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +66,6 @@ public class CompanyService {
 
 
     public CompanyDto getCompanyByUsername() {
-        // TODO Auto-generated method stub
         Company company = companyRepository.findByUsername(username);
         CompanyDto companyDTO = new CompanyDto();
 
@@ -88,7 +86,6 @@ public class CompanyService {
 
 
     private JobPostDtoCompany convertToJobPostDtoCompany(JobPost jobPost) {
-        // TODO Auto-generated method stub
         JobPostDtoCompany jobPostDTOCompany = new JobPostDtoCompany();
         jobPostDTOCompany.setPostId(jobPost.getPostId());
         jobPostDTOCompany.setPostProfile(jobPost.getPostProfile());
@@ -104,7 +101,6 @@ public class CompanyService {
 
 
     public String createJobPost(JobPostRequestDto jobPostRequestDto) {
-        // TODO Auto-generated method stub
 
         Company company = companyRepository.getReferenceById(username);
         JobPost jobPost = convertToJobPostEntity(jobPostRequestDto);
@@ -134,11 +130,10 @@ public class CompanyService {
     }
 
 
-    public ResponseEntity<String> updateJobPost(JobPostUpdateDto jobPost) {
-        // TODO Auto-generated method stub
+    public String updateJobPost(JobPostUpdateDto jobPost) {
 
         if(!companyContainsJobPost(jobPost.getPostId())) {
-            return new ResponseEntity<String>("Not valid job post id", HttpStatus.BAD_REQUEST);
+            throw new InvalidJobPostIdException("No such job post id " + jobPost.getPostId());
         }
 
         JobPost job = jobRepository.getReferenceById(jobPost.getPostId());
@@ -151,16 +146,15 @@ public class CompanyService {
 
         jobRepository.save(job);
 
-        return new ResponseEntity<String>("Job Post Updated Successfully", HttpStatus.OK);
+        return "Job Post Updated Successfully";
     }
 
 
 
-    public ResponseEntity<String> deleteJobPost(Integer postId) {
-        // TODO Auto-generated method stub
+    public String deleteJobPost(Integer postId) {
 
         if(!companyContainsJobPost(postId)) {
-            return new ResponseEntity<String>("Not valid job post id", HttpStatus.NOT_FOUND);
+            throw new InvalidJobPostIdException("Not valid job post id " + postId);
         }
 
         Company company = companyRepository.findByUsername(username);
@@ -177,7 +171,7 @@ public class CompanyService {
 
         jobRepository.deleteById(postId);
 
-        return new ResponseEntity<String>("Job Post Deleted Succesfully", HttpStatus.OK);
+        return "Job Post Deleted Successfully";
     }
 
     public List<JobPostInsight> getJobpostInsight() {
