@@ -12,6 +12,7 @@ import com.jobportal.app.model.LoginInfo;
 import com.jobportal.app.repository.CompanyRepository;
 import com.jobportal.app.repository.JobRepository;
 import com.jobportal.app.security.JwtUtilCandidate;
+import com.jobportal.app.utility.AppMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,12 +51,12 @@ public class CandidateService {
     public String registerCandidate(CandidateRequestDto candidate) {
 
         if(candidateRepository.findById(candidate.getEmail()).orElse(null) != null) {
-            throw new AlreadyRegisteredException("Email " + candidate.getEmail() + " already registered");
+            throw new AlreadyRegisteredException(String.format(AppMessages.EMAIL_ALREADY_REGISTERED, candidate.getEmail()));
         }
 
         candidate.setPassword(new BCryptPasswordEncoder().encode(candidate.getPassword()));
         candidateRepository.save(convertToCandidateEntity(candidate));
-        return "Registered Successfully";
+        return AppMessages.REGISTERED_SUCCESSFULLY;
     }
 
     private Candidate convertToCandidateEntity(CandidateRequestDto candidateRequestDto) {
@@ -102,7 +103,7 @@ public class CandidateService {
         JobPost jobPost = jobRepository.findById(jobPostId).orElse(null);
 
         if(jobPost == null) {
-            return "No such Job Post Id " + jobPostId;
+            return String.format(AppMessages.NO_SUCH_JOB_POST, jobPostId);
         }
 
         jobPost.getCandidateList().add(username);
@@ -112,7 +113,7 @@ public class CandidateService {
         candidate.getJobPostListAndDate().put(jobPostId, LocalDate.now());
         candidateRepository.save(candidate);
 
-        return "Successfully applied for " + jobPost.getPostProfile() + " role!";
+        return String.format(AppMessages.SUCCESSFULLY_APPLIED, jobPost.getPostProfile());
     }
 
     public CandidateDto getCandidateProfile() {
