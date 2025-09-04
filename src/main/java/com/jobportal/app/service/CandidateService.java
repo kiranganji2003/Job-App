@@ -159,7 +159,7 @@ public class CandidateService {
         Candidate candidate = candidateRepository.findByEmail(username);
 
         if(!candidate.getJobPostListAndDate().keySet().contains(jobPostId)) {
-            throw new InvalidJobPostIdException("Not applied to job post id " + jobPostId);
+            throw new InvalidJobPostIdException(String.format(AppMessages.NOT_APPLIED_JOBPOST, jobPostId));
         }
 
         JobPostDtoCandidate jobPostDtoCandidate = getJobPostDTOCandidate(jobPostId);
@@ -185,7 +185,7 @@ public class CandidateService {
 
         candidateRepository.deleteById(username);
 
-        return username + " deleted successfully";
+        return String.format(AppMessages.USER_DELETED_SUCCESSFULLY, username);
     }
 
     public List<JobPostDtoCandidate> getJobPostBySalary(long min, long max) {
@@ -250,7 +250,7 @@ public class CandidateService {
         Candidate userOpt = candidateRepository.findByEmail(username);
 
         if (userOpt == null || !passwordEncoder.matches(password, userOpt.getPassword())) {
-            throw new InvalidCredentialsException("Invalid Candidate Credentials");
+            throw new InvalidCredentialsException(AppMessages.INVALID_CANDIDATE_CREDENTIALS);
         }
 
         return jwtUtil.generateToken(username);
