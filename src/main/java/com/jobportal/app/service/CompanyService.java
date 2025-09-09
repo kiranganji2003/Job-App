@@ -12,6 +12,7 @@ import com.jobportal.app.exception.InvalidJobPostIdException;
 import com.jobportal.app.model.*;
 import com.jobportal.app.repository.CandidateRepository;
 import com.jobportal.app.security.JwtUtilCompany;
+import com.jobportal.app.utility.AppMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,12 +46,12 @@ public class CompanyService {
     public String registerCompany(CompanyRequestDto company) {
 
         if(companyRepository.findByUsername(company.getUsername()) != null) {
-            throw new AlreadyRegisteredException("Username " + company.getUsername() + " already registered");
+            throw new AlreadyRegisteredException(String.format(AppMessages.USERNAME_ALREADY_REGISTERED, company.getUsername()));
         }
 
         company.setPassword(passwordEncoder.encode(company.getPassword()));
         companyRepository.save(convertToCompanyEntity(company));
-        return "Registered Successfully";
+        return AppMessages.REGISTERED_SUCCESSFULLY;
     }
 
     private Company convertToCompanyEntity(CompanyRequestDto companyRequestDto) {
@@ -110,7 +111,7 @@ public class CompanyService {
         company.getJobPostListAndDate().put(savedJobPost.getPostId(), LocalDate.now());
         companyRepository.save(company);
 
-        return "Job Posted Successfully";
+        return AppMessages.JOB_POSTED_SUCCESSFULLY;
     }
 
     private JobPost convertToJobPostEntity(JobPostRequestDto jobPostRequestDto) {
@@ -133,7 +134,7 @@ public class CompanyService {
     public String updateJobPost(JobPostUpdateDto jobPost) {
 
         if(!companyContainsJobPost(jobPost.getPostId())) {
-            throw new InvalidJobPostIdException("No such job post id " + jobPost.getPostId());
+            throw new InvalidJobPostIdException(String.format(AppMessages.NO_SUCH_JOB_POST, jobPost.getPostId()));
         }
 
         JobPost job = jobRepository.getReferenceById(jobPost.getPostId());
@@ -146,7 +147,7 @@ public class CompanyService {
 
         jobRepository.save(job);
 
-        return "Job Post Updated Successfully";
+        return AppMessages.JOB_POST_UPDATED_SUCCESSFULLY;
     }
 
 
@@ -154,7 +155,7 @@ public class CompanyService {
     public String deleteJobPost(Integer postId) {
 
         if(!companyContainsJobPost(postId)) {
-            throw new InvalidJobPostIdException("Not valid job post id " + postId);
+            throw new InvalidJobPostIdException(String.format(AppMessages.NOT_VALID_JOB_POST, postId));
         }
 
         Company company = companyRepository.findByUsername(username);
@@ -171,7 +172,7 @@ public class CompanyService {
 
         jobRepository.deleteById(postId);
 
-        return "Job Post Deleted Successfully";
+        return AppMessages.JOB_POST_DELETED_SUCCESSFULLY;
     }
 
     public List<JobPostInsight> getJobpostInsight() {
@@ -200,7 +201,7 @@ public class CompanyService {
         Company userOpt = companyRepository.findByUsername(username);
 
         if (userOpt == null || !passwordEncoder.matches(password, userOpt.getPassword())) {
-            throw new InvalidCredentialsException("Invalid Company Credentials");
+            throw new InvalidCredentialsException(AppMessages.INVALID_COMPANY_CREDENTIALS);
         }
 
         return jwtUtilCompany.generateToken(username);

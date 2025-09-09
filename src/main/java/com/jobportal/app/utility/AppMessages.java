@@ -8,4 +8,11 @@ public class AppMessages {
     public static final String NOT_APPLIED_JOBPOST = "Not applied to job post id %s";
     public static final String USER_DELETED_SUCCESSFULLY = "%s deleted successfully";
     public static final String INVALID_CANDIDATE_CREDENTIALS = "Invalid Candidate Credentials";
+
+    public static final String USERNAME_ALREADY_REGISTERED = "Username %s already registered";
+    public static final String JOB_POSTED_SUCCESSFULLY = "Job Posted Successfully";
+    public static final String JOB_POST_UPDATED_SUCCESSFULLY = "Job Post Updated Successfully";
+    public static final String NOT_VALID_JOB_POST = "Not valid job post id %s";
+    public static final String JOB_POST_DELETED_SUCCESSFULLY = "Job Post Deleted Successfully";
+    public static final String INVALID_COMPANY_CREDENTIALS = "Invalid Company Credentials";
 }
