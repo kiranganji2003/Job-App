@@ -3,6 +3,7 @@ package com.jobportal.app.controller;
 import java.util.List;
 
 import com.jobportal.app.model.*;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +30,7 @@ public class CompanyController {
         this.companyService = companyService;
     }
 
-    @PostMapping("login")
+    @PostMapping("sessions")
     String loginCompany(@RequestBody LoginInfo loginInfo) {
         return companyService.loginCompany(loginInfo);
     }

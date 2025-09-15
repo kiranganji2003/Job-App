@@ -1,11 +1,8 @@
 package com.jobportal.app.controller;
 
 import com.jobportal.app.model.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.jobportal.app.service.CandidateService;
@@ -17,14 +14,13 @@ import java.util.List;
 public class CandidateController {
 
     private CandidateService candidateService;
-    private static final Logger logger = LoggerFactory.getLogger(CandidateController.class);
 
     @Autowired
     public CandidateController(CandidateService candidateService) {
         this.candidateService = candidateService;
     }
 
-    @PostMapping("login")
+    @PostMapping("sessions")
     public String login(@RequestBody LoginInfo loginInfo) {
         return candidateService.candidateLoginService(loginInfo);
     }
