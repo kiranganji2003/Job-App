@@ -1,7 +1,6 @@
 package com.jobportal.app.controller;
 
 import com.jobportal.app.model.*;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
