@@ -65,8 +65,8 @@ public class CandidateController {
     }
 
     @GetMapping("jobpost/search/techstack")
-    List<JobPostDtoCandidate> getJobsByTechStack(@RequestBody TechStackList techStackList) {
-        return candidateService.getJobsByTechStack(techStackList.getTechStackList());
+    List<JobPostDtoCandidate> getJobsByTechStack(@RequestParam List<String> techStackList) {
+        return candidateService.getJobsByTechStack(techStackList);
     }
 
 }
