@@ -69,4 +69,9 @@ public class CandidateController {
         return candidateService.getJobsByTechStack(techStackList);
     }
 
+    @GetMapping(value = "jobpost", params = "days")
+    List<JobPostDtoCandidate> getJobsByLastNDays(@RequestParam Integer days) {
+        return null;
+    }
+
 }
