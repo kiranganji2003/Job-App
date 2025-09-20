@@ -22,10 +22,9 @@ public interface JobRepository extends JpaRepository<JobPost, Integer> {
 
 
     @Query("""
-        SELECT j FROM JobPost j
-        JOIN j.postTechStack tech
+        SELECT job FROM JobPost job
+        JOIN job.postTechStack tech
         WHERE LOWER(tech) IN :inputTechs
         """)
     List<JobPost> findByMatchingTechStack(@Param("inputTechs") List<String> inputTechs);
-
 }

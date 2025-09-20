@@ -255,5 +255,25 @@ public class CandidateService {
 
         return jwtUtil.generateToken(username);
     }
+
+    public List<JobPostDtoCandidate> getJobsByLastNDays(Integer days) {
+
+        LocalDate lastNthDay = LocalDate.now().minusDays(days);
+        List<JobPost> jobPostList = jobRepository.findAll();
+        List<JobPostDtoCandidate> result = new ArrayList<>();
+
+        for(JobPost jobPost : jobPostList) {
+            Company company = companyRepository.findByUsername(jobPost.getCompanyUsername());
+            LocalDate jobPostDate = company.getJobPostListAndDate().get(jobPost.getPostId());
+
+            if(jobPostDate.isAfter(lastNthDay)) {
+                JobPostDtoCandidate jobPostDtoCandidate = getJobPostDTOCandidate(jobPost.getPostId());
+                jobPostDtoCandidate.setJobPostDate(jobPostDate);
+                result.add(jobPostDtoCandidate);
+            }
+        }
+
+        return result;
+    }
 }
 

@@ -71,7 +71,7 @@ public class CandidateController {
 
     @GetMapping(value = "jobpost", params = "days")
     List<JobPostDtoCandidate> getJobsByLastNDays(@RequestParam Integer days) {
-        return null;
+        return candidateService.getJobsByLastNDays(days);
     }
 
 }
