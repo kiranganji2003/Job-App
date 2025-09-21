@@ -2,6 +2,7 @@ package com.jobportal.app.controller;
 
 import com.jobportal.app.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.jobportal.app.service.CandidateService;
@@ -20,58 +21,58 @@ public class CandidateController {
     }
 
     @PostMapping("sessions")
-    public String login(@RequestBody LoginInfo loginInfo) {
-        return candidateService.candidateLoginService(loginInfo);
+    public ResponseEntity<String> login(@RequestBody LoginInfo loginInfo) {
+        return ResponseEntity.ok(candidateService.candidateLoginService(loginInfo));
     }
 
     @PostMapping("register")
-    String registerCandidate(@RequestBody CandidateRequestDto candidate) {
-        return candidateService.registerCandidate(candidate);
+    public ResponseEntity<String> registerCandidate(@RequestBody CandidateRequestDto candidate) {
+        return ResponseEntity.ok(candidateService.registerCandidate(candidate));
     }
 
     @GetMapping("jobpost")
-    List<JobPostDtoCandidate> getAllJobPost() {
-        return candidateService.getAllJobPost();
+    public ResponseEntity<List<JobPostDtoCandidate>> getAllJobPost() {
+        return ResponseEntity.ok(candidateService.getAllJobPost());
     }
 
     @GetMapping("jobpost/search")
-    List<JobPostDtoCandidate> getJobsByQuery(@RequestParam String query) {
-        return candidateService.getJobsByQuery(query);
+    public ResponseEntity<List<JobPostDtoCandidate>> getJobsByQuery(@RequestParam String query) {
+        return ResponseEntity.ok(candidateService.getJobsByQuery(query));
     }
 
     @PostMapping("apply")
-    String applyJobPost(@RequestBody JobPostIdDto jobPostIdDTO) {
-        return candidateService.applyJobPost(jobPostIdDTO.getJobPostId());
+    public ResponseEntity<String> applyJobPost(@RequestBody JobPostIdDto jobPostIdDTO) {
+        return ResponseEntity.ok(candidateService.applyJobPost(jobPostIdDTO.getJobPostId()));
     }
 
     @GetMapping("profile")
-    CandidateDto getCandidateProfile() {
-        return candidateService.getCandidateProfile();
+    public ResponseEntity<CandidateDto> getCandidateProfile() {
+        return ResponseEntity.ok(candidateService.getCandidateProfile());
     }
 
     @PostMapping("withdrawn")
-    JobPostDtoCandidate withdrawJobApplication(@RequestBody JobPostIdDto jobPostIdDTO) {
-        return candidateService.withdrawJobApplication(jobPostIdDTO.getJobPostId());
+    public ResponseEntity<JobPostDtoCandidate> withdrawJobApplication(@RequestBody JobPostIdDto jobPostIdDTO) {
+        return ResponseEntity.ok(candidateService.withdrawJobApplication(jobPostIdDTO.getJobPostId()));
     }
 
     @DeleteMapping("delete")
-    String deleteCandidate() {
-        return candidateService.deleteCandidate();
+    public ResponseEntity<String> deleteCandidate() {
+        return ResponseEntity.ok(candidateService.deleteCandidate());
     }
 
     @GetMapping("jobpost/salary")
-    List<JobPostDtoCandidate> getJobPostBySalary(@RequestParam(required = false, defaultValue = "0") Long min, @RequestParam(required = false, defaultValue = "9223372036854775807") Long max) {
-        return candidateService.getJobPostBySalary(min, max);
+    public ResponseEntity<List<JobPostDtoCandidate>> getJobPostBySalary(@RequestParam(required = false, defaultValue = "0") Long min, @RequestParam(required = false, defaultValue = "9223372036854775807") Long max) {
+        return ResponseEntity.ok(candidateService.getJobPostBySalary(min, max));
     }
 
     @GetMapping("jobpost/search/techstack")
-    List<JobPostDtoCandidate> getJobsByTechStack(@RequestParam List<String> techStackList) {
-        return candidateService.getJobsByTechStack(techStackList);
+    public ResponseEntity<List<JobPostDtoCandidate>> getJobsByTechStack(@RequestParam List<String> techStackList) {
+        return ResponseEntity.ok(candidateService.getJobsByTechStack(techStackList));
     }
 
     @GetMapping(value = "jobpost", params = "days")
-    List<JobPostDtoCandidate> getJobsByLastNDays(@RequestParam Integer days) {
-        return candidateService.getJobsByLastNDays(days);
+    public ResponseEntity<List<JobPostDtoCandidate>> getJobsByLastNDays(@RequestParam Integer days) {
+        return ResponseEntity.ok(candidateService.getJobsByLastNDays(days));
     }
 
 }

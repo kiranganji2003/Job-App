@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.jobportal.app.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,37 +30,37 @@ public class CompanyController {
     }
 
     @PostMapping("sessions")
-    String loginCompany(@RequestBody LoginInfo loginInfo) {
-        return companyService.loginCompany(loginInfo);
+    public ResponseEntity<String> loginCompany(@RequestBody LoginInfo loginInfo) {
+        return ResponseEntity.ok(companyService.loginCompany(loginInfo));
     }
 
     @PostMapping("register")
-    String registerCompany(@RequestBody CompanyRequestDto company) {
-        return companyService.registerCompany(company);
+    public ResponseEntity<String> registerCompany(@RequestBody CompanyRequestDto company) {
+        return ResponseEntity.ok(companyService.registerCompany(company));
     }
 
     @GetMapping("profile")
-    CompanyDto getCompanyByUsername() {
-        return companyService.getCompanyByUsername();
+    public ResponseEntity<CompanyDto> getCompanyByUsername() {
+        return ResponseEntity.ok(companyService.getCompanyByUsername());
     }
 
     @PostMapping("jobpost")
-    String createJobPost(@RequestBody JobPostRequestDto jobPost) {
-        return companyService.createJobPost(jobPost);
+    public ResponseEntity<String> createJobPost(@RequestBody JobPostRequestDto jobPost) {
+        return ResponseEntity.ok(companyService.createJobPost(jobPost));
     }
 
     @PutMapping("jobpost")
-    String updateJobPost(@RequestBody JobPostUpdateDto jobPost) {
-        return companyService.updateJobPost(jobPost);
+    public ResponseEntity<String> updateJobPost(@RequestBody JobPostUpdateDto jobPost) {
+        return ResponseEntity.ok(companyService.updateJobPost(jobPost));
     }
 
     @DeleteMapping("jobpost")
-    String deleteJobPost(@RequestBody JobPostIdDto jobPostIdDTO) {
-        return companyService.deleteJobPost(jobPostIdDTO.getJobPostId());
+    public ResponseEntity<String> deleteJobPost(@RequestBody JobPostIdDto jobPostIdDTO) {
+        return ResponseEntity.ok(companyService.deleteJobPost(jobPostIdDTO.getJobPostId()));
     }
 
     @GetMapping("jobpost/insight")
-    List<JobPostInsight> getJobpostInsight() {
-        return companyService.getJobpostInsight();
+    public ResponseEntity<List<JobPostInsight>> getJobpostInsight() {
+        return ResponseEntity.ok(companyService.getJobpostInsight());
     }
 }
