@@ -35,9 +35,9 @@ public class CandidateController {
         return ResponseEntity.ok(candidateService.getAllJobPost());
     }
 
-    @GetMapping("jobpost/search")
-    public ResponseEntity<List<JobPostDtoCandidate>> getJobsByQuery(@RequestParam String query) {
-        return ResponseEntity.ok(candidateService.getJobsByQuery(query));
+    @GetMapping(value = "jobpost", params = "search")
+    public ResponseEntity<List<JobPostDtoCandidate>> getJobsByQuery(@RequestParam String search) {
+        return ResponseEntity.ok(candidateService.getJobsByQuery(search));
     }
 
     @PostMapping("apply")
@@ -65,9 +65,9 @@ public class CandidateController {
         return ResponseEntity.ok(candidateService.getJobPostBySalary(min, max));
     }
 
-    @GetMapping("jobpost/search/techstack")
-    public ResponseEntity<List<JobPostDtoCandidate>> getJobsByTechStack(@RequestParam List<String> techStackList) {
-        return ResponseEntity.ok(candidateService.getJobsByTechStack(techStackList));
+    @GetMapping(value = "jobpost", params = "techstack")
+    public ResponseEntity<List<JobPostDtoCandidate>> getJobsByTechStack(@RequestParam List<String> techstack) {
+        return ResponseEntity.ok(candidateService.getJobsByTechStack(techstack));
     }
 
     @GetMapping(value = "jobpost", params = "days")

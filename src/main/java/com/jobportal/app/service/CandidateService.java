@@ -92,7 +92,10 @@ public class CandidateService {
         List<JobPostDtoCandidate> jobPostDtoCandidateList = new ArrayList<>();
 
         for(JobPost jobPost : jobPostList) {
-            jobPostDtoCandidateList.add(getJobPostDTOCandidate(jobPost.getPostId()));
+            Company company = companyRepository.findByUsername(jobPost.getCompanyUsername());
+            JobPostDtoCandidate jobPostDtoCandidate = getJobPostDTOCandidate(jobPost.getPostId());
+            jobPostDtoCandidate.setJobPostDate(company.getJobPostListAndDate().get(jobPost.getPostId()));
+            jobPostDtoCandidateList.add(jobPostDtoCandidate);
         }
 
         return jobPostDtoCandidateList;
