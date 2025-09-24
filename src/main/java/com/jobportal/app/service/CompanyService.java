@@ -14,6 +14,7 @@ import com.jobportal.app.repository.CandidateRepository;
 import com.jobportal.app.security.JwtUtilCompany;
 import com.jobportal.app.utility.AppMessages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,8 +31,6 @@ public class CompanyService {
     private CandidateRepository candidateRepository;
     private PasswordEncoder passwordEncoder;
     private JwtUtilCompany jwtUtilCompany;
-    public static String username;
-
 
     @Autowired
     public CompanyService(CompanyRepository companyRepository, JobRepository jobRepository, CandidateRepository candidateRepository, PasswordEncoder passwordEncoder, JwtUtilCompany jwtUtilCompany) {
@@ -42,6 +41,10 @@ public class CompanyService {
         this.jwtUtilCompany = jwtUtilCompany;
     }
 
+
+    private String getLoggedInUsername() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 
     public String registerCompany(CompanyRequestDto company) {
 
@@ -67,7 +70,7 @@ public class CompanyService {
 
 
     public CompanyDto getCompanyByUsername() {
-        Company company = companyRepository.findByUsername(username);
+        Company company = companyRepository.findByUsername(getLoggedInUsername());
         CompanyDto companyDTO = new CompanyDto();
 
         companyDTO.setUsername(company.getUsername());
@@ -103,10 +106,10 @@ public class CompanyService {
 
     public String createJobPost(JobPostRequestDto jobPostRequestDto) {
 
-        Company company = companyRepository.getReferenceById(username);
+        Company company = companyRepository.getReferenceById(getLoggedInUsername());
         JobPost jobPost = convertToJobPostEntity(jobPostRequestDto);
         jobPost.setCompany(company.getName());
-        jobPost.setCompanyUsername(username);
+        jobPost.setCompanyUsername(getLoggedInUsername());
         JobPost savedJobPost = jobRepository.save(jobPost);
         company.getJobPostListAndDate().put(savedJobPost.getPostId(), LocalDate.now());
         companyRepository.save(company);
@@ -126,7 +129,7 @@ public class CompanyService {
     }
 
     private boolean companyContainsJobPost(int jobpost) {
-        Company company = companyRepository.findByUsername(username);
+        Company company = companyRepository.findByUsername(getLoggedInUsername());
         return company.getJobPostListAndDate().keySet().contains(jobpost);
     }
 
@@ -158,7 +161,7 @@ public class CompanyService {
             throw new InvalidJobPostIdException(String.format(AppMessages.NOT_VALID_JOB_POST, postId));
         }
 
-        Company company = companyRepository.findByUsername(username);
+        Company company = companyRepository.findByUsername(getLoggedInUsername());
         company.getJobPostListAndDate().remove(Integer.valueOf(postId));
         companyRepository.save(company);
 
@@ -177,7 +180,7 @@ public class CompanyService {
 
     public List<JobPostInsight> getJobpostInsight() {
         List<JobPostInsight> jobPostList = new ArrayList<>();
-        Company company = companyRepository.findByUsername(username);
+        Company company = companyRepository.findByUsername(getLoggedInUsername());
 
         for(int postId : company.getJobPostListAndDate().keySet()) {
             JobPost jobPost = jobRepository.findById(postId).orElse(new JobPost());

@@ -29,7 +29,6 @@ public class JwtAuthFilterCandidate extends OncePerRequestFilter {
                 String token = authHeader.substring(7);
                 if (jwtUtil.isTokenValid(token)) {
                     String username = jwtUtil.extractUsername(token);
-                    CandidateService.username = username;
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             username, null, null);
                     SecurityContextHolder.getContext().setAuthentication(authToken);

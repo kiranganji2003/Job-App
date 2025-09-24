@@ -14,6 +14,7 @@ import com.jobportal.app.repository.JobRepository;
 import com.jobportal.app.security.JwtUtilCandidate;
 import com.jobportal.app.utility.AppMessages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,6 @@ public class CandidateService {
     private CompanyRepository companyRepository;
     private JwtUtilCandidate jwtUtil;
     private PasswordEncoder passwordEncoder;
-    public static String username;
 
     @Autowired
     public CandidateService(CandidateRepository candidateRepository, JobRepository jobRepository, CompanyRepository companyRepository,
@@ -47,6 +47,9 @@ public class CandidateService {
 
     }
 
+    private String getLoggedInUsername() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 
     public String registerCandidate(CandidateRequestDto candidate) {
 
@@ -109,10 +112,10 @@ public class CandidateService {
             return String.format(AppMessages.NO_SUCH_JOB_POST, jobPostId);
         }
 
-        jobPost.getCandidateList().add(username);
+        jobPost.getCandidateList().add(getLoggedInUsername());
         jobRepository.save(jobPost);
 
-        Candidate candidate = candidateRepository.findByEmail(username);
+        Candidate candidate = candidateRepository.findByEmail(getLoggedInUsername());
         candidate.getJobPostListAndDate().put(jobPostId, LocalDate.now());
         candidateRepository.save(candidate);
 
@@ -122,7 +125,7 @@ public class CandidateService {
     public CandidateDto getCandidateProfile() {
         CandidateDto candidateDTO = new CandidateDto();
 
-        Candidate candidate = candidateRepository.findByEmail(username);
+        Candidate candidate = candidateRepository.findByEmail(getLoggedInUsername());
         candidateDTO.setName(candidate.getName());
         candidateDTO.setCompany(candidate.getCompany());
         candidateDTO.setEmail(candidate.getEmail());
@@ -159,7 +162,7 @@ public class CandidateService {
 
     public JobPostDtoCandidate withdrawJobApplication(Integer jobPostId) {
 
-        Candidate candidate = candidateRepository.findByEmail(username);
+        Candidate candidate = candidateRepository.findByEmail(getLoggedInUsername());
 
         if(!candidate.getJobPostListAndDate().keySet().contains(jobPostId)) {
             throw new InvalidJobPostIdException(String.format(AppMessages.NOT_APPLIED_JOBPOST, jobPostId));
@@ -171,24 +174,24 @@ public class CandidateService {
         candidateRepository.save(candidate);
 
         JobPost jobPost = jobRepository.findById(jobPostId).orElse(new JobPost());
-        jobPost.getCandidateList().remove(username);
+        jobPost.getCandidateList().remove(getLoggedInUsername());
         jobRepository.save(jobPost);
 
         return jobPostDtoCandidate;
     }
 
     public String deleteCandidate() {
-        Candidate candidate = candidateRepository.findByEmail(username);
+        Candidate candidate = candidateRepository.findByEmail(getLoggedInUsername());
 
         for(int jobPostId : candidate.getJobPostListAndDate().keySet()) {
             JobPost jobPost = jobRepository.findById(jobPostId).orElse(new JobPost());
-            jobPost.getCandidateList().remove(username);
+            jobPost.getCandidateList().remove(getLoggedInUsername());
             jobRepository.save(jobPost);
         }
 
-        candidateRepository.deleteById(username);
+        candidateRepository.deleteById(getLoggedInUsername());
 
-        return String.format(AppMessages.USER_DELETED_SUCCESSFULLY, username);
+        return String.format(AppMessages.USER_DELETED_SUCCESSFULLY, getLoggedInUsername());
     }
 
     public List<JobPostDtoCandidate> getJobPostBySalary(long min, long max) {
