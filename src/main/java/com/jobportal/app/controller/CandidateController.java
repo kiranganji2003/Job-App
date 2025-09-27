@@ -35,6 +35,12 @@ public class CandidateController {
         return ResponseEntity.ok(candidateService.getAllJobPost());
     }
 
+    @GetMapping(value = "jobpost", params = {"page", "size"})
+    public ResponseEntity<List<JobPostDtoCandidate>> getJobsByPage(@RequestParam int page,
+                                                                   @RequestParam int size) {
+        return ResponseEntity.ok(candidateService.getJobsByPage(page, size));
+    }
+
     @GetMapping(value = "jobpost", params = "search")
     public ResponseEntity<List<JobPostDtoCandidate>> getJobsByQuery(@RequestParam String search) {
         return ResponseEntity.ok(candidateService.getJobsByQuery(search));

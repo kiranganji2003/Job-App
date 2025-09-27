@@ -14,6 +14,9 @@ import com.jobportal.app.repository.JobRepository;
 import com.jobportal.app.security.JwtUtilCandidate;
 import com.jobportal.app.utility.AppMessages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -277,6 +280,23 @@ public class CandidateService {
         }
 
         return result;
+    }
+
+    public List<JobPostDtoCandidate> getJobsByPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<JobPost> jobPostPage = jobRepository.findAll(pageable);
+        List<JobPost> allJobPost = jobPostPage.getContent();
+
+        List<JobPostDtoCandidate> list = new ArrayList<>();
+
+        for(JobPost jobPost : allJobPost) {
+            JobPostDtoCandidate jobPostDTOCandidate = getJobPostDTOCandidate(jobPost.getPostId());
+            Company company = companyRepository.findByUsername(jobPost.getCompanyUsername());
+            jobPostDTOCandidate.setJobPostDate(company.getJobPostListAndDate().get(jobPost.getPostId()));
+            list.add(jobPostDTOCandidate);
+        }
+
+        return list;
     }
 }
 
