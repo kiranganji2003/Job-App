@@ -27,4 +27,11 @@ public interface JobRepository extends JpaRepository<JobPost, Integer> {
         WHERE LOWER(tech) IN :inputTechs
         """)
     List<JobPost> findByMatchingTechStack(@Param("inputTechs") List<String> inputTechs);
+
+    @Query("""
+            Select job 
+            FROM JobPost job
+            WHERE job.salary >= :min AND job.salary <= :max
+            """)
+    List<JobPost> findBySalaryRange(@Param("min") Double min, @Param("max") Double max);
 }

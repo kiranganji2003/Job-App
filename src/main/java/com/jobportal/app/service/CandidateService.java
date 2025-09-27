@@ -195,13 +195,10 @@ public class CandidateService {
     }
 
     public List<JobPostDtoCandidate> getJobPostBySalary(long min, long max) {
-        List<JobPost> allJobPost = jobRepository.findAll();
+        List<JobPost> allJobPost = jobRepository.findBySalaryRange((double) min, (double) max);
         List<JobPostDtoCandidate> filteredList = new ArrayList<>();
 
         for(JobPost jobPost : allJobPost) {
-            if(jobPost.getSalary() < min || jobPost.getSalary() > max) {
-                continue;
-            }
             JobPostDtoCandidate jobPostDtoCandidate = getJobPostDTOCandidate(jobPost.getPostId());
             Company company = companyRepository.findByUsername(jobPost.getCompanyUsername());
             jobPostDtoCandidate.setJobPostDate(company.getJobPostListAndDate().get(jobPost.getPostId()));
