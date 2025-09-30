@@ -6,11 +6,13 @@ import java.util.Collections;
 import java.util.List;
 
 import com.jobportal.app.entity.Candidate;
+import com.jobportal.app.entity.CompanyArchivedJobs;
 import com.jobportal.app.exception.AlreadyRegisteredException;
 import com.jobportal.app.exception.InvalidCredentialsException;
 import com.jobportal.app.exception.InvalidJobPostIdException;
 import com.jobportal.app.model.*;
 import com.jobportal.app.repository.CandidateRepository;
+import com.jobportal.app.repository.CompanyArchivedRepository;
 import com.jobportal.app.security.JwtUtilCompany;
 import com.jobportal.app.utility.AppMessages;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +31,19 @@ public class CompanyService {
     private CompanyRepository companyRepository;
     private JobRepository jobRepository;
     private CandidateRepository candidateRepository;
+    private CompanyArchivedRepository companyArchivedRepository;
     private PasswordEncoder passwordEncoder;
     private JwtUtilCompany jwtUtilCompany;
 
     @Autowired
-    public CompanyService(CompanyRepository companyRepository, JobRepository jobRepository, CandidateRepository candidateRepository, PasswordEncoder passwordEncoder, JwtUtilCompany jwtUtilCompany) {
+    public CompanyService(CompanyRepository companyRepository, JobRepository jobRepository, CandidateRepository candidateRepository, PasswordEncoder passwordEncoder, JwtUtilCompany jwtUtilCompany,
+                          CompanyArchivedRepository companyArchivedRepository) {
         this.companyRepository = companyRepository;
         this.jobRepository = jobRepository;
         this.candidateRepository = candidateRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtilCompany = jwtUtilCompany;
+        this.companyArchivedRepository = companyArchivedRepository;
     }
 
 
@@ -208,6 +213,26 @@ public class CompanyService {
         }
 
         return jwtUtilCompany.generateToken(username);
+    }
+
+    public Message archiveJobPost(int jobPostId) {
+        Company company = companyRepository.findByUsername(getLoggedInUsername());
+
+        if(!company.getJobPostListAndDate().containsKey(jobPostId)) {
+            throw new InvalidJobPostIdException(String.format(AppMessages.NOT_VALID_JOB_POST, jobPostId));
+        }
+
+        CompanyArchivedJobs companyArchivedJobs = companyArchivedRepository.findById(getLoggedInUsername()).orElse(null);
+
+        if(companyArchivedJobs == null) {
+            companyArchivedJobs = new CompanyArchivedJobs();
+            companyArchivedJobs.setUsername(getLoggedInUsername());
+        }
+
+        companyArchivedJobs.getArchivedJobPostList().put(jobPostId, LocalDate.now());
+        companyArchivedRepository.save(companyArchivedJobs);
+
+        return new Message(String.format(AppMessages.JOBPOST_ARCHIVED_SUCCESSFULLY, jobPostId));
     }
 }
 

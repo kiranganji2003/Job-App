@@ -15,4 +15,5 @@ public class AppMessages {
     public static final String NOT_VALID_JOB_POST = "Not valid job post id %s";
     public static final String JOB_POST_DELETED_SUCCESSFULLY = "Job Post Deleted Successfully";
     public static final String INVALID_COMPANY_CREDENTIALS = "Invalid Company Credentials";
+    public static final String JOBPOST_ARCHIVED_SUCCESSFULLY = "Job Post id %s archived successfully";
 }

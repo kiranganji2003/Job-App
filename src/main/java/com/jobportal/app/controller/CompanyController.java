@@ -3,6 +3,7 @@ package com.jobportal.app.controller;
 import java.util.List;
 
 import com.jobportal.app.model.*;
+import com.jobportal.app.model.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,13 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jobportal.app.service.CompanyService;
 
 
-
 @RestController
 @RequestMapping("company")
 public class CompanyController {
 
     private CompanyService companyService;
-
 
     @Autowired
     public CompanyController(CompanyService companyService) {
@@ -62,5 +61,10 @@ public class CompanyController {
     @GetMapping("jobpost/insight")
     public ResponseEntity<List<JobPostInsight>> getJobpostInsight() {
         return ResponseEntity.ok(companyService.getJobpostInsight());
+    }
+
+    @PostMapping("jobpost/archive")
+    public ResponseEntity<Message> archiveJobPost(@RequestBody JobPostIdDto jobPostIdDto) {
+        return ResponseEntity.ok(companyService.archiveJobPost(jobPostIdDto.getJobPostId()));
     }
 }
