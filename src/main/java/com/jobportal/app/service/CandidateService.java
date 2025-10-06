@@ -112,7 +112,7 @@ public class CandidateService {
         JobPost jobPost = jobRepository.findById(jobPostId).orElse(null);
 
         if(jobPost == null) {
-            return String.format(AppMessages.NO_SUCH_JOB_POST, jobPostId);
+            throw new InvalidJobPostIdException(String.format(AppMessages.NO_SUCH_JOB_POST, jobPostId));
         }
 
         jobPost.getCandidateList().add(getLoggedInUsername());

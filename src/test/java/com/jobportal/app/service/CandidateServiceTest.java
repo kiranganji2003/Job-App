@@ -1,7 +1,9 @@
 package com.jobportal.app.service;
 
 import com.jobportal.app.entity.Candidate;
+import com.jobportal.app.entity.JobPost;
 import com.jobportal.app.exception.AlreadyRegisteredException;
+import com.jobportal.app.exception.InvalidJobPostIdException;
 import com.jobportal.app.model.CandidateRequestDto;
 import com.jobportal.app.repository.CandidateRepository;
 import com.jobportal.app.repository.CompanyRepository;
@@ -64,6 +66,17 @@ public class CandidateServiceTest {
 
         assertEquals(AppMessages.REGISTERED_SUCCESSFULLY, result);
         verify(candidateRepository, times(1)).save(any());
+    }
+
+    @Test
+    void applyJobPost_InvalidJobPost() {
+        when(jobRepository.findById(-1)).thenReturn(Optional.empty());
+
+        InvalidJobPostIdException invalidJobPostIdException =
+                assertThrows(InvalidJobPostIdException.class,
+                        () -> candidateService.applyJobPost(-1));
+
+        assertEquals("No such Job Post Id -1", invalidJobPostIdException.getMessage());
     }
 
 }
