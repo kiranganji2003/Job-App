@@ -47,7 +47,7 @@ public class CandidateController {
     }
 
     @PostMapping("apply")
-    public ResponseEntity<String> applyJobPost(@RequestBody JobPostIdDto jobPostIdDTO) {
+    public ResponseEntity<Message> applyJobPost(@RequestBody JobPostIdDto jobPostIdDTO) {
         return ResponseEntity.ok(candidateService.applyJobPost(jobPostIdDTO.getJobPostId()));
     }
 

@@ -14,6 +14,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -70,7 +73,7 @@ public class CandidateServiceTest {
 
     @Test
     void applyJobPost_InvalidJobPost() {
-        when(jobRepository.findById(-1)).thenReturn(Optional.empty());
+        when(jobRepository.findById(any())).thenReturn(Optional.empty());
 
         InvalidJobPostIdException invalidJobPostIdException =
                 assertThrows(InvalidJobPostIdException.class,
@@ -78,5 +81,4 @@ public class CandidateServiceTest {
 
         assertEquals("No such Job Post Id -1", invalidJobPostIdException.getMessage());
     }
-
 }

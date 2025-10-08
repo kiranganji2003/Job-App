@@ -5,10 +5,7 @@ import com.jobportal.app.entity.JobPost;
 import com.jobportal.app.exception.AlreadyRegisteredException;
 import com.jobportal.app.exception.InvalidCredentialsException;
 import com.jobportal.app.exception.InvalidJobPostIdException;
-import com.jobportal.app.model.CandidateDto;
-import com.jobportal.app.model.CandidateRequestDto;
-import com.jobportal.app.model.JobPostDtoCandidate;
-import com.jobportal.app.model.LoginInfo;
+import com.jobportal.app.model.*;
 import com.jobportal.app.repository.CompanyRepository;
 import com.jobportal.app.repository.JobRepository;
 import com.jobportal.app.security.JwtUtilCandidate;
@@ -107,7 +104,7 @@ public class CandidateService {
         return jobPostDtoCandidateList;
     }
 
-    public String applyJobPost(Integer jobPostId) {
+    public Message applyJobPost(Integer jobPostId) {
 
         JobPost jobPost = jobRepository.findById(jobPostId).orElse(null);
 
@@ -122,7 +119,7 @@ public class CandidateService {
         candidate.getJobPostListAndDate().put(jobPostId, LocalDate.now());
         candidateRepository.save(candidate);
 
-        return String.format(AppMessages.SUCCESSFULLY_APPLIED, jobPost.getPostProfile());
+        return new Message(String.format(AppMessages.SUCCESSFULLY_APPLIED, jobPost.getPostProfile()));
     }
 
     public CandidateDto getCandidateProfile() {
