@@ -1,7 +1,6 @@
 package com.jobportal.app.service;
 
 import com.jobportal.app.entity.Candidate;
-import com.jobportal.app.entity.JobPost;
 import com.jobportal.app.exception.AlreadyRegisteredException;
 import com.jobportal.app.exception.InvalidJobPostIdException;
 import com.jobportal.app.model.CandidateRequestDto;
@@ -14,9 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;

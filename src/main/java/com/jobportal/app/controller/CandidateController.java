@@ -26,7 +26,7 @@ public class CandidateController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<String> registerCandidate(@RequestBody CandidateRequestDto candidate) {
+    public ResponseEntity<Message> registerCandidate(@RequestBody CandidateRequestDto candidate) {
         return ResponseEntity.ok(candidateService.registerCandidate(candidate));
     }
 

@@ -51,7 +51,7 @@ public class CandidateService {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
-    public String registerCandidate(CandidateRequestDto candidate) {
+    public Message registerCandidate(CandidateRequestDto candidate) {
 
         if(candidateRepository.findById(candidate.getEmail()).orElse(null) != null) {
             throw new AlreadyRegisteredException(String.format(AppMessages.EMAIL_ALREADY_REGISTERED, candidate.getEmail()));
@@ -59,7 +59,7 @@ public class CandidateService {
 
         candidate.setPassword(new BCryptPasswordEncoder().encode(candidate.getPassword()));
         candidateRepository.save(convertToCandidateEntity(candidate));
-        return AppMessages.REGISTERED_SUCCESSFULLY;
+        return new Message(AppMessages.REGISTERED_SUCCESSFULLY);
     }
 
     private Candidate convertToCandidateEntity(CandidateRequestDto candidateRequestDto) {
