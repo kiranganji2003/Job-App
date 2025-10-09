@@ -51,7 +51,7 @@ public class CompanyService {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
-    public String registerCompany(CompanyRequestDto company) {
+    public Message registerCompany(CompanyRequestDto company) {
 
         if(companyRepository.findByUsername(company.getUsername()) != null) {
             throw new AlreadyRegisteredException(String.format(AppMessages.USERNAME_ALREADY_REGISTERED, company.getUsername()));
@@ -59,7 +59,7 @@ public class CompanyService {
 
         company.setPassword(passwordEncoder.encode(company.getPassword()));
         companyRepository.save(convertToCompanyEntity(company));
-        return AppMessages.REGISTERED_SUCCESSFULLY;
+        return new Message(AppMessages.REGISTERED_SUCCESSFULLY);
     }
 
     private Company convertToCompanyEntity(CompanyRequestDto companyRequestDto) {
@@ -109,7 +109,7 @@ public class CompanyService {
 
 
 
-    public String createJobPost(JobPostRequestDto jobPostRequestDto) {
+    public Message createJobPost(JobPostRequestDto jobPostRequestDto) {
 
         Company company = companyRepository.getReferenceById(getLoggedInUsername());
         JobPost jobPost = convertToJobPostEntity(jobPostRequestDto);
@@ -119,7 +119,7 @@ public class CompanyService {
         company.getJobPostListAndDate().put(savedJobPost.getPostId(), LocalDate.now());
         companyRepository.save(company);
 
-        return AppMessages.JOB_POSTED_SUCCESSFULLY;
+        return new Message(AppMessages.JOB_POSTED_SUCCESSFULLY);
     }
 
     private JobPost convertToJobPostEntity(JobPostRequestDto jobPostRequestDto) {
@@ -139,7 +139,7 @@ public class CompanyService {
     }
 
 
-    public String updateJobPost(JobPostUpdateDto jobPost) {
+    public Message updateJobPost(JobPostUpdateDto jobPost) {
 
         if(!companyContainsJobPost(jobPost.getPostId())) {
             throw new InvalidJobPostIdException(String.format(AppMessages.NO_SUCH_JOB_POST, jobPost.getPostId()));
@@ -155,12 +155,12 @@ public class CompanyService {
 
         jobRepository.save(job);
 
-        return AppMessages.JOB_POST_UPDATED_SUCCESSFULLY;
+        return new Message(AppMessages.JOB_POST_UPDATED_SUCCESSFULLY);
     }
 
 
 
-    public String deleteJobPost(Integer postId) {
+    public Message deleteJobPost(Integer postId) {
 
         if(!companyContainsJobPost(postId)) {
             throw new InvalidJobPostIdException(String.format(AppMessages.NOT_VALID_JOB_POST, postId));
@@ -180,7 +180,7 @@ public class CompanyService {
 
         jobRepository.deleteById(postId);
 
-        return AppMessages.JOB_POST_DELETED_SUCCESSFULLY;
+        return new Message(AppMessages.JOB_POST_DELETED_SUCCESSFULLY);
     }
 
     public List<JobPostInsight> getJobpostInsight() {

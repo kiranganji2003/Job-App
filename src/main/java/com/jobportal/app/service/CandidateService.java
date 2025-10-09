@@ -180,7 +180,7 @@ public class CandidateService {
         return jobPostDtoCandidate;
     }
 
-    public String deleteCandidate() {
+    public Message deleteCandidate() {
         Candidate candidate = candidateRepository.findByEmail(getLoggedInUsername());
 
         for(int jobPostId : candidate.getJobPostListAndDate().keySet()) {
@@ -191,7 +191,7 @@ public class CandidateService {
 
         candidateRepository.deleteById(getLoggedInUsername());
 
-        return String.format(AppMessages.USER_DELETED_SUCCESSFULLY, getLoggedInUsername());
+        return new Message(String.format(AppMessages.USER_DELETED_SUCCESSFULLY, getLoggedInUsername()));
     }
 
     public List<JobPostDtoCandidate> getJobPostBySalary(long min, long max) {

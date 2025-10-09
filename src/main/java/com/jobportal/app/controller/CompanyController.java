@@ -34,7 +34,7 @@ public class CompanyController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<String> registerCompany(@RequestBody CompanyRequestDto company) {
+    public ResponseEntity<Message> registerCompany(@RequestBody CompanyRequestDto company) {
         return ResponseEntity.ok(companyService.registerCompany(company));
     }
 
@@ -44,17 +44,17 @@ public class CompanyController {
     }
 
     @PostMapping("jobpost")
-    public ResponseEntity<String> createJobPost(@RequestBody JobPostRequestDto jobPost) {
+    public ResponseEntity<Message> createJobPost(@RequestBody JobPostRequestDto jobPost) {
         return ResponseEntity.ok(companyService.createJobPost(jobPost));
     }
 
     @PutMapping("jobpost")
-    public ResponseEntity<String> updateJobPost(@RequestBody JobPostUpdateDto jobPost) {
+    public ResponseEntity<Message> updateJobPost(@RequestBody JobPostUpdateDto jobPost) {
         return ResponseEntity.ok(companyService.updateJobPost(jobPost));
     }
 
     @DeleteMapping("jobpost")
-    public ResponseEntity<String> deleteJobPost(@RequestBody JobPostIdDto jobPostIdDTO) {
+    public ResponseEntity<Message> deleteJobPost(@RequestBody JobPostIdDto jobPostIdDTO) {
         return ResponseEntity.ok(companyService.deleteJobPost(jobPostIdDTO.getJobPostId()));
     }
 

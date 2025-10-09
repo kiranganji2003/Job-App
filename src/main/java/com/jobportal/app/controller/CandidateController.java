@@ -62,7 +62,7 @@ public class CandidateController {
     }
 
     @DeleteMapping("delete")
-    public ResponseEntity<String> deleteCandidate() {
+    public ResponseEntity<Message> deleteCandidate() {
         return ResponseEntity.ok(candidateService.deleteCandidate());
     }
 
