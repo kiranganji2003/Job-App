@@ -1,6 +1,5 @@
 package com.jobportal.app.security;
 
-import com.jobportal.app.service.CompanyService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
