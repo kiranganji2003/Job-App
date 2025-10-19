@@ -61,7 +61,7 @@ public class CandidateServiceTest {
         dto.setEmail("test@gmail.com");
         dto.setPassword("test@123");
 
-        String result = candidateService.registerCandidate(dto);
+        String result = candidateService.registerCandidate(dto).getMessage();
 
         assertEquals(AppMessages.REGISTERED_SUCCESSFULLY, result);
         verify(candidateRepository, times(1)).save(any());
