@@ -10,7 +10,7 @@ import java.util.*;
 
 @Entity
 @Data
-public class Company {
+public class Company1 {
 
     @Id
     private String username;
