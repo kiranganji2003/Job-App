@@ -63,7 +63,7 @@ public class CandidateServiceTest {
 
         String result = candidateService.registerCandidate(dto).getMessage();
 
-        assertEquals(AppMessages.REGISTERED_SUCCESSFULLY + "temp", result);
+        assertEquals(AppMessages.REGISTERED_SUCCESSFULLY, result);
         verify(candidateRepository, times(1)).save(any());
     }
 
